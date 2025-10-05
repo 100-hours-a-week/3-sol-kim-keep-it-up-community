@@ -7,10 +7,14 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update   # ?? ??? create / create-drop / update ? ??
+      ddl-auto: update  # ?? ??? create / create-drop / update ? ??
     properties:
       hibernate:
         format_sql: true
+server:
+  error:
+    include-stacktrace: never      # 스택트레이스 숨김
+    include-binding-errors: never
 
 logging:
   level:
