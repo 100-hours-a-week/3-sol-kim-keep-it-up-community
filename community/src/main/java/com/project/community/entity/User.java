@@ -20,7 +20,6 @@ public class User {
     @Column(name = "comment_id") // 데이터베이스에 어떤 이름과 형식으로 저장될지 지정. 이름, 데이터 형식, 제약 조건 등을 명시
     private Long id;
 
-    @Column(length = 20, nullable = false, unique = true)
     private String nickname;
 
     @Email(message = "이메일 형식이 아닙니다.")
@@ -35,7 +34,8 @@ public class User {
     @OneToMany(mappedBy = "writer")
     private List<Post> postList = new ArrayList<>();
 
-    private boolean didWithdraw = false;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     public User(String nickname, String email, String encryptedPassword) {
         this.nickname = nickname;

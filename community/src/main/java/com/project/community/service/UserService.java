@@ -29,8 +29,13 @@ public class UserService {
         String nickname = userSignUpRequest.getNickname();
         String email = userSignUpRequest.getEmail();
 
-        if (userRepository.existsByNickname(nickname)) throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname has already been taken");
         if (userRepository.existsByEmail(email)) throw new ResponseStatusException(HttpStatus.CONFLICT, "Email has already been taken");
+
+        if (userRepository.existsByNickname(nickname)) {
+            User user = userRepository.findByNickname(nickname);
+            if (!user.isDeleted())
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname has already been taken");
+        }
 
         User user = new User(nickname, userSignUpRequest.getEmail(), encryptedPassword);
         userRepository.save(user);
@@ -39,13 +44,23 @@ public class UserService {
 
     public UserProfileResponseDto getUserInfo(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "User has withdrawn");
         return UserMapper.toProfileResponseDto(user);
     }
 
     @Transactional
     public UserResponseDto updateProfile(Long id, UserProfileUpdateRequest userProfileUpdateRequest) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "User has withdrawn");
         user.setNickname(userProfileUpdateRequest.getNickname());
+        userRepository.save(user);
+        return UserMapper.toResponseDto(user);
+    }
+
+    @Transactional
+    public UserResponseDto withdraw(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setDeleted(true);
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
     }

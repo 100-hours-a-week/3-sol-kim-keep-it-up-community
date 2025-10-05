@@ -37,9 +37,10 @@ public class UserController {
         UserResponseDto userResponseDto = userService.updateProfile(id, userProfileUpdateRequest);
         return ResponseEntity.ok(UserResponse.from("profile updated", userResponseDto));
     }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<UserResponse> withdraw() {
-//
-//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UserResponse> withdraw(@PathVariable Long id) {
+        UserResponseDto userResponseDto = userService.withdraw(id);
+        return ResponseEntity.ok(UserResponse.from("withdrawal success", userResponseDto));
+    }
 }
