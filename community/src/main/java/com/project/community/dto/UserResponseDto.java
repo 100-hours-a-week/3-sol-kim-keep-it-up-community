@@ -1,9 +1,12 @@
 package com.project.community.dto;
 
+import lombok.Getter;
+
+@Getter
 public class UserResponseDto {
 
-    private Long id;
-    private String nickname;
+    private final Long id;
+    private final String nickname;
 
     public UserResponseDto(Long id, String nickname) {
         this.id = id;

@@ -28,7 +28,7 @@ public class UserService {
         String email = userSignUpRequest.getEmail();
 
         if (userRepository.existsByNickname(nickname)) throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname has already been taken");
-        if (userRepository.existsByEmail(email)) throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname has already been taken");
+        if (userRepository.existsByEmail(email)) throw new ResponseStatusException(HttpStatus.CONFLICT, "Email has already been taken");
 
         User user = new User(nickname, userSignUpRequest.getEmail(), encryptedPassword);
         userRepository.save(user);
