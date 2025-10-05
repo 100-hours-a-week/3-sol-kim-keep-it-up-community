@@ -1,5 +1,6 @@
 package com.project.community.service;
 
+import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.entity.User;
@@ -33,5 +34,10 @@ public class UserService {
         User user = new User(nickname, userSignUpRequest.getEmail(), encryptedPassword);
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
+    }
+
+    public UserProfileResponseDto getUserInfo(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return UserMapper.toProfileResponseDto(user);
     }
 }
