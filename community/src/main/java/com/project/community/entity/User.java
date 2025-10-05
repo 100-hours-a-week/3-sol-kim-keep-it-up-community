@@ -2,10 +2,13 @@ package com.project.community.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 public class User {
 
     @Id // PK(기본키) 설정
@@ -30,4 +33,9 @@ public class User {
 
     private boolean didWithdraw = false;
 
+    public User(String nickname, String email, String encryptedPassword) {
+        this.nickname = nickname;
+        this.email = email;
+        password = encryptedPassword;
+    }
 }
