@@ -1,7 +1,8 @@
 package com.project.community.dto.response;
 
-import com.project.community.dto.UserResponseDto;
+import lombok.Getter;
 
+@Getter
 public class UserResponse<T> {
 
     private String message;
