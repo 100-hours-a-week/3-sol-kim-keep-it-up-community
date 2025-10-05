@@ -17,6 +17,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Transactional
     public UserResponseDto createUser(UserSignUpRequest userSignUpRequest) {
 
         String encryptedPassword = bCryptPasswordEncoder.encode(userSignUpRequest.getPassword());
