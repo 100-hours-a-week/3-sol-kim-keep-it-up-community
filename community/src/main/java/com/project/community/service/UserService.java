@@ -6,9 +6,11 @@ import com.project.community.entity.User;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.UserMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,7 +24,13 @@ public class UserService {
     public UserResponseDto createUser(UserSignUpRequest userSignUpRequest) {
 
         String encryptedPassword = bCryptPasswordEncoder.encode(userSignUpRequest.getPassword());
-        User user = new User(userSignUpRequest.getNickname(), userSignUpRequest.getEmail(), encryptedPassword);
+        String nickname = userSignUpRequest.getNickname();
+        String email = userSignUpRequest.getEmail();
+
+        if (userRepository.existsByNickname(nickname)) throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname has already been taken");
+        if (userRepository.existsByEmail(email)) throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname has already been taken");
+
+        User user = new User(nickname, userSignUpRequest.getEmail(), encryptedPassword);
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
     }
