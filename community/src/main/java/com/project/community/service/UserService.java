@@ -2,6 +2,7 @@ package com.project.community.service;
 
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
+import com.project.community.dto.request.UserProfileUpdateRequest;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.entity.User;
 import com.project.community.repository.UserRepository;
@@ -39,5 +40,13 @@ public class UserService {
     public UserProfileResponseDto getUserInfo(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return UserMapper.toProfileResponseDto(user);
+    }
+
+    @Transactional
+    public UserResponseDto updateProfile(Long id, UserProfileUpdateRequest userProfileUpdateRequest) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        user.setNickname(userProfileUpdateRequest.getNickname());
+        userRepository.save(user);
+        return UserMapper.toResponseDto(user);
     }
 }

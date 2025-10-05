@@ -3,6 +3,7 @@ package com.project.community.controller;
 
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
+import com.project.community.dto.request.UserProfileUpdateRequest;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.dto.response.UserResponse;
 import com.project.community.service.UserService;
@@ -31,10 +32,11 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.from("user info fetched", userProfileResponseDto));
     }
 
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<UserResponse> updateUserInfo() {
-//
-//    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUserInfo(@PathVariable Long id, @RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
+        UserResponseDto userResponseDto = userService.updateProfile(id, userProfileUpdateRequest);
+        return ResponseEntity.ok(UserResponse.from("profile updated", userResponseDto));
+    }
 //
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<UserResponse> withdraw() {

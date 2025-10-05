@@ -5,12 +5,13 @@ import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
@@ -19,7 +20,7 @@ public class User {
     @Column(name = "comment_id") // 데이터베이스에 어떤 이름과 형식으로 저장될지 지정. 이름, 데이터 형식, 제약 조건 등을 명시
     private Long id;
 
-    @Column(length = 10, nullable = false, unique = true)
+    @Column(length = 20, nullable = false, unique = true)
     private String nickname;
 
     @Email(message = "이메일 형식이 아닙니다.")
