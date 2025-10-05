@@ -11,6 +11,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+server:
+  error:
+    include-stacktrace: never      # 스택트레이스 숨김
+    include-binding-errors: never
 
 logging:
   level:
