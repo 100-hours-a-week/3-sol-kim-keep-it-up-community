@@ -15,7 +15,16 @@ public class PostResponse<T> {
         this.data = data;
     }
 
-    public static <T> PostResponse<T>from(String message, T data) {
+    public PostResponse(String message) {
+        this.message = message;
+    }
+
+
+    public static <T> PostResponse<T> from(String message, T data) {
         return new PostResponse<>(message, data);
+    }
+
+    public static <T> PostResponse<T> from(String message) {
+        return new PostResponse<>(message);
     }
 }

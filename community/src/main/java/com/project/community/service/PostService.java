@@ -52,4 +52,11 @@ public class PostService {
         postRepository.save(post);
         return PostMapper.toResponseDto(post);
     }
+
+    @Transactional
+    public void deletePost(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
+        post.setDeleted(true);
+        postRepository.save(post);
+    }
 }
