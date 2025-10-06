@@ -9,15 +9,18 @@ import com.project.community.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.project.community.util.PostMapper;
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostService {
     private final UserRepository userRepository;
 
     private final PostRepository postRepository;
 
+    @Transactional
     public PostResponseDto createPost(PostRequest postRequest) {
         User writer = userRepository.findById(postRequest.getWriterId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found"));
         Post post = PostMapper.toPost(postRequest, writer);
