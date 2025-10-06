@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor
@@ -28,11 +30,12 @@ public class PostController {
         PostResponseDto postResponseDto = postService.getPostDetail(id);
         return ResponseEntity.ok(PostResponse.from("post info fetched", postResponseDto));
     }
-//
-//    @GetMapping
-//    public ResponseEntity<PostResponse> getPostList() {
-//
-//    }
+
+    @GetMapping
+    public ResponseEntity<PostResponse> getPostList() {
+        List<PostResponseDto> postResponseDtoList = postService.getPostList();
+        return ResponseEntity.ok(PostResponse.from("post list fetched", postResponseDtoList));
+    }
 //
 //    @PatchMapping("/{id}")
 //    public ResponseEntity<PostResponse> updatePost() {

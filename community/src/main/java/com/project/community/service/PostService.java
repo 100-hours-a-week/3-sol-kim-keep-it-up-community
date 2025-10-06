@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import com.project.community.util.PostMapper;
+
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,5 +34,12 @@ public class PostService {
     public PostResponseDto getPostDetail(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
         return PostMapper.toResponseDto(post);
+    }
+
+    public List<PostResponseDto> getPostList() {
+        return  postRepository.findAllByIsDeletedFalse()
+                .stream()
+                .map(p -> PostMapper.toResponseDto(p))
+                .toList();
     }
 }
