@@ -40,8 +40,8 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<PostResponse> updatePost(@Valid @RequestBody PostUpdateRequest postUpdateRequest) {
-        PostResponseDto postResponseDto = postService.updatePost(postUpdateRequest);
+    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateRequest postUpdateRequest) {
+        PostResponseDto postResponseDto = postService.updatePost(id, postUpdateRequest);
         return ResponseEntity.ok(PostResponse.from("post update success", postResponseDto));
     }
 

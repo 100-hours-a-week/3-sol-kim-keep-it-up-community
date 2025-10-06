@@ -45,8 +45,8 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(PostUpdateRequest postUpdateRequest) {
-        Post post = postRepository.findById(postUpdateRequest.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
+    public PostResponseDto updatePost(Long id, PostUpdateRequest postUpdateRequest) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
         post.setTitle(postUpdateRequest.getTitle());
         post.setContents(postUpdateRequest.getContents());
         postRepository.save(post);

@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostUpdateRequest {
 
-    @NotNull
-    private final Long id;
+//    @NotNull
+//    private final Long id;
     private final String title;
     private final String contents;
 
