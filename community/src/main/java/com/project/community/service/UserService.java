@@ -52,7 +52,13 @@ public class UserService {
     public UserResponseDto updateProfile(Long id, UserProfileUpdateRequest userProfileUpdateRequest) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "User has withdrawn");
-        user.setNickname(userProfileUpdateRequest.getNickname());
+        String nickname = userProfileUpdateRequest.getNickname();
+        if (userRepository.existsByNickname(nickname)) {
+            User userNicknameDuplicated = userRepository.findByNickname(nickname);
+            if (!userNicknameDuplicated.isDeleted())
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Nickname has already been taken");
+        }
+        user.setNickname(nickname);
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
     }
@@ -60,6 +66,7 @@ public class UserService {
     @Transactional
     public UserResponseDto withdraw(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "User has already withdrawn");
         user.setDeleted(true);
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
