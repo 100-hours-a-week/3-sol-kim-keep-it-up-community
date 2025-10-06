@@ -1,10 +1,16 @@
 package com.project.community.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post {
 
     @Id
@@ -26,4 +32,11 @@ public class Post {
     private LocalDateTime createdAt;
 
     private boolean isDeleted;
+
+    public Post(String title, String contents, User writer) {
+        this.title = title;
+        this.contents = contents;
+        this.writer = writer;
+        createdAt = LocalDateTime.now();
+    }
 }

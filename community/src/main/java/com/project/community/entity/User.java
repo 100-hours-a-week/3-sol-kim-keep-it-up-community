@@ -1,5 +1,6 @@
 package com.project.community.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;
@@ -32,6 +33,7 @@ public class User {
     // private String profilImageUrl;
 
     @OneToMany(mappedBy = "writer")
+    @JsonIgnore
     private List<Post> postList = new ArrayList<>();
 
     @Column(nullable = false)
