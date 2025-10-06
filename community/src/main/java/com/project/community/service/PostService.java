@@ -2,6 +2,7 @@ package com.project.community.service;
 
 import com.project.community.dto.PostResponseDto;
 import com.project.community.dto.request.PostRequest;
+import com.project.community.dto.request.PostUpdateRequest;
 import com.project.community.entity.Post;
 import com.project.community.entity.User;
 import com.project.community.repository.PostRepository;
@@ -41,5 +42,14 @@ public class PostService {
                 .stream()
                 .map(p -> PostMapper.toResponseDto(p))
                 .toList();
+    }
+
+    @Transactional
+    public PostResponseDto updatePost(PostUpdateRequest postUpdateRequest) {
+        Post post = postRepository.findById(postUpdateRequest.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
+        post.setTitle(postUpdateRequest.getTitle());
+        post.setContents(postUpdateRequest.getContents());
+        postRepository.save(post);
+        return PostMapper.toResponseDto(post);
     }
 }
