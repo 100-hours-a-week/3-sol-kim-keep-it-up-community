@@ -24,4 +24,9 @@ public class PostService {
         postRepository.save(post);
         return PostMapper.toResponseDto(post);
     }
+
+    public PostResponseDto getPostDetail(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
+        return PostMapper.toResponseDto(post);
+    }
 }

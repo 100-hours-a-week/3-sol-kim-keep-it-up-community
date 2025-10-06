@@ -22,10 +22,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(PostResponse.from("post published", postResponseDto));
     }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<PostResponse> getPostDetail() {
-//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PostResponse> getPostDetail(@PathVariable Long id) {
+        PostResponseDto postResponseDto = postService.getPostDetail(id);
+        return ResponseEntity.ok(PostResponse.from("post info fetched", postResponseDto));
+    }
 //
 //    @GetMapping
 //    public ResponseEntity<PostResponse> getPostList() {
