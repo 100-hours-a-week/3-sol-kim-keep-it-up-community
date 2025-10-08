@@ -1,13 +1,16 @@
 package com.project.community.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.cglib.core.Local;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -27,17 +30,32 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "writer_id")
+    @Column(nullable = false)
     private User writer;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private boolean isDeleted;
+
+    @OneToMany(mappedBy = "post")
+    @JsonIgnore
+    @Where(clause = "is_deleted = false")
+    private List<Comment> commentList = new ArrayList<>();
 
     public Post(String title, String contents, User writer) {
         this.title = title;
         this.contents = contents;
         this.writer = writer;
         createdAt = LocalDateTime.now();
+    }
+
+    public void addComment(Comment comment) {
+        commentList.add(comment);
+    }
+
+    public void deleteComment(Comment comment) {
+        commentList.remove(comment);
     }
 }
