@@ -3,6 +3,7 @@ package com.project.community.controller;
 
 import com.project.community.dto.CommentResponseDto;
 import com.project.community.dto.request.CommentPostRequest;
+import com.project.community.dto.request.CommentUpdateRequest;
 import com.project.community.dto.response.CommentResponse;
 import com.project.community.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,19 @@ public class CommentController {
     public ResponseEntity<CommentResponse> postComment(@RequestBody CommentPostRequest commentPostRequest) {
         CommentResponseDto commentResponseDto = commentService.createComment(commentPostRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CommentResponse.from("Comment posted", commentResponseDto));
+                .body(CommentResponse.from("comment posted", commentResponseDto));
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<CommentResponse> getPostComments(@PathVariable Long postId) {
         List<CommentResponseDto> commentResponseDtoList = commentService.getPostComments(postId);
-        return ResponseEntity.ok(CommentResponse.from("Post's comments fetched", commentResponseDtoList));
+        return ResponseEntity.ok(CommentResponse.from("post's comments fetched", commentResponseDtoList));
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<CommentResponse> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateRequest commentUpdateRequest) {
+        CommentResponseDto commentResponseDto = commentService.updateComment(commentId, commentUpdateRequest);
+        return ResponseEntity.ok(CommentResponse.from("comment updated", commentResponseDto));
     }
 
 }

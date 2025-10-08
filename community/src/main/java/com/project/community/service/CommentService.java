@@ -2,6 +2,7 @@ package com.project.community.service;
 
 import com.project.community.dto.CommentResponseDto;
 import com.project.community.dto.request.CommentPostRequest;
+import com.project.community.dto.request.CommentUpdateRequest;
 import com.project.community.entity.Comment;
 import com.project.community.entity.Post;
 import com.project.community.entity.User;
@@ -43,6 +44,14 @@ public class CommentService {
         if (post.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "Post has been deleted.");
         List<Comment> commentList = post.getCommentList();
         return commentList.stream().map(c -> CommentMapper.toResponseDto(c)).toList();
+    }
+
+    @Transactional
+    public CommentResponseDto updateComment(Long id, CommentUpdateRequest commentUpdateRequest) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found."));
+        comment.setContents(commentUpdateRequest.getContents());
+        commentRepository.save(comment);
+        return CommentMapper.toResponseDto(comment);
     }
 }
 
