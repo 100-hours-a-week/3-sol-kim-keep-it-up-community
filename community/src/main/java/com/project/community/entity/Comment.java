@@ -22,24 +22,20 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "writer_id", nullable = false)
-    @NotNull
     private User writer;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
-    @NotNull
     private Post post;
 
-    @NotNull
+    @Column(nullable = false)
     @NotBlank
     private String contents;
 
-    @Column(name = "created_at")
-    @NotNull
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "is_deleted")
-    @NotNull
+    @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
     public Comment(String contents, User writer, Post post) {

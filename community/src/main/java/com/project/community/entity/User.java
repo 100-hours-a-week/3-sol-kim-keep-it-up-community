@@ -3,6 +3,7 @@ package com.project.community.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,13 @@ public class User {
     @Column(name = "comment_id") // 데이터베이스에 어떤 이름과 형식으로 저장될지 지정. 이름, 데이터 형식, 제약 조건 등을 명시
     private Long id;
 
+    @Column(nullable = false)
+    @NotBlank
     private String nickname;
 
     @Email(message = "이메일 형식이 아닙니다.")
     @Column(nullable = false, unique = true)
+    @NotBlank
     private String email;
 
     @Column(nullable = false)

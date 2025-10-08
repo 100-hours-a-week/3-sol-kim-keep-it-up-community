@@ -30,11 +30,13 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "writer_id")
+    @Column(nullable = false)
     private User writer;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private boolean isDeleted;
 
     @OneToMany(mappedBy = "post")
