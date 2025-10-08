@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,9 +30,19 @@ public class CommentService {
         User user = userRepository.findById(commentPostRequest.getWriterId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         Post post = postRepository.findById(commentPostRequest.getPostId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
         if (post.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "Post has been deleted");
+
         Comment comment = CommentMapper.toComment(user, post, commentPostRequest);
+        post.addComment(comment);
         commentRepository.save(comment);
+        postRepository.save(post);
         return CommentMapper.toResponseDto(comment);
+    }
+
+    public List<CommentResponseDto> getPostComments(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found."));
+        if (post.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "Post has been deleted.");
+        List<Comment> commentList = post.getCommentList();
+        return commentList.stream().map(c -> CommentMapper.toResponseDto(c)).toList();
     }
 }
 
