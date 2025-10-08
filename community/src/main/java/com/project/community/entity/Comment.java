@@ -1,6 +1,8 @@
 package com.project.community.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,16 +22,25 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "writer_id", nullable = false)
+    @NotNull
     private User writer;
 
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
+    @NotNull
     private Post post;
 
+    @NotNull
+    @NotBlank
     private String contents;
 
     @Column(name = "created_at")
+    @NotNull
     private LocalDateTime createdAt;
+
+    @Column(name = "is_deleted")
+    @NotNull
+    private boolean isDeleted = false;
 
     public Comment(String contents, User writer, Post post) {
         this.contents = contents;

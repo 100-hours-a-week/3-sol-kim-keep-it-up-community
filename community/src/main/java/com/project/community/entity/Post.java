@@ -6,7 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.cglib.core.Local;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,6 +39,7 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     @JsonIgnore
+    @Where(clause = "is_deleted = false")
     private List<Comment> commentList = new ArrayList<>();
 
     public Post(String title, String contents, User writer) {
@@ -50,5 +51,9 @@ public class Post {
 
     public void addComment(Comment comment) {
         commentList.add(comment);
+    }
+
+    public void deleteComment(Comment comment) {
+        commentList.remove(comment);
     }
 }

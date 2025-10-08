@@ -53,6 +53,16 @@ public class CommentService {
         commentRepository.save(comment);
         return CommentMapper.toResponseDto(comment);
     }
+
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found."));
+        if (comment.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "Already deleted comment");
+        comment.setDeleted(true);
+        Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        if (post.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, "Post has been deleted");
+        post.deleteComment(comment);
+    }
 }
 
 
