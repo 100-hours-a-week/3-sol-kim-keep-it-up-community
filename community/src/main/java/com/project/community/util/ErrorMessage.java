@@ -1,0 +1,24 @@
+package com.project.community.util;
+
+public enum ErrorMessage {
+
+    EMAIL_CONFLICT("Email has already been taken"),
+    NICKNAME_CONFLICT("Nickname has already been taken"),
+    USER_NOT_FOUND("User not found"),
+    USER_GONE("User has withdrawn"),
+    USER_ALREADY_GONE("User has already withdrawn"),
+    POST_NOT_FOUND("Post not found"),
+    POST_GONE("Post has been deleted."),
+    COMMENT_NOT_FOUND("Comment not found."),
+    COMMENT_ALREADY_GONE("Already deleted comment");
+
+    private String message;
+
+    ErrorMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+}
