@@ -1,13 +1,10 @@
 package com.project.community.dto.response;
-
-import com.project.community.dto.PostResponseDto;
-import com.project.community.entity.Post;
 import lombok.Getter;
 
 @Getter
 public class PostResponse<T> {
 
-    private String message;
+    private final String message;
     private T data;
 
     public PostResponse(String message, T data) {
