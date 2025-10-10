@@ -30,7 +30,7 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "writer_id")
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private User writer;
 
     @Column(name = "created_at", nullable = false, updatable = false)
