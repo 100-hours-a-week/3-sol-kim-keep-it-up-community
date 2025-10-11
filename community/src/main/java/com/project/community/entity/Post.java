@@ -30,19 +30,20 @@ public class Post {
 
     @ManyToOne
     @JoinColumn(name = "writer_id")
-    @Column(nullable = false)
     private User writer;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "post")
     @JsonIgnore
     @Where(clause = "is_deleted = false")
     private List<Comment> commentList = new ArrayList<>();
+
+    private int likesCount = 0;
 
     public Post(String title, String contents, User writer) {
         this.title = title;
@@ -57,5 +58,13 @@ public class Post {
 
     public void deleteComment(Comment comment) {
         commentList.remove(comment);
+    }
+
+    public void increaseLikesCount() {
+        likesCount += 1;
+    }
+
+    public void decreaseLikesCount() {
+        likesCount -= 1;
     }
 }

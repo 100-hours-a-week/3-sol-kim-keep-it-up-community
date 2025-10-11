@@ -7,6 +7,7 @@ import com.project.community.entity.Post;
 import com.project.community.entity.User;
 import com.project.community.repository.PostRepository;
 import com.project.community.repository.UserRepository;
+import com.project.community.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,14 +27,14 @@ public class PostService {
 
     @Transactional
     public PostResponseDto createPost(PostRequest postRequest) {
-        User writer = userRepository.findById(postRequest.getWriterId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"User not found"));
+        User writer = userRepository.findById(postRequest.getWriterId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
         Post post = PostMapper.toPost(postRequest, writer);
         postRepository.save(post);
         return PostMapper.toResponseDto(post);
     }
 
     public PostResponseDto getPostDetail(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
         return PostMapper.toResponseDto(post);
     }
 
@@ -46,7 +47,7 @@ public class PostService {
 
     @Transactional
     public PostResponseDto updatePost(Long id, PostUpdateRequest postUpdateRequest) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,ErrorMessage.POST_NOT_FOUND.getMessage()));
         post.setTitle(postUpdateRequest.getTitle());
         post.setContents(postUpdateRequest.getContents());
         postRepository.save(post);
@@ -55,7 +56,7 @@ public class PostService {
 
     @Transactional
     public void deletePost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Post not found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,ErrorMessage.POST_NOT_FOUND.getMessage()));
         post.setDeleted(true);
         postRepository.save(post);
     }

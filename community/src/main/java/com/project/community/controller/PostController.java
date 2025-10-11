@@ -5,6 +5,7 @@ import com.project.community.dto.request.PostRequest;
 import com.project.community.dto.request.PostUpdateRequest;
 import com.project.community.dto.response.PostResponse;
 import com.project.community.service.PostService;
+import com.project.community.util.Message;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,30 +25,30 @@ public class PostController {
     public ResponseEntity<PostResponse> publishPost(@Valid @RequestBody PostRequest postRequest) {
         PostResponseDto postResponseDto = postService.createPost(postRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(PostResponse.from("post published", postResponseDto));
+                .body(PostResponse.from(Message.POST_PUBLISHED.getMessage(), postResponseDto));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostDetail(@PathVariable Long id) {
         PostResponseDto postResponseDto = postService.getPostDetail(id);
-        return ResponseEntity.ok(PostResponse.from("post info fetched", postResponseDto));
+        return ResponseEntity.ok(PostResponse.from(Message.POST_FETCHED.getMessage(), postResponseDto));
     }
 
     @GetMapping
     public ResponseEntity<PostResponse> getPostList() {
         List<PostResponseDto> postResponseDtoList = postService.getPostList();
-        return ResponseEntity.ok(PostResponse.from("post list fetched", postResponseDtoList));
+        return ResponseEntity.ok(PostResponse.from(Message.POST_LIST_FETCHED.getMessage(), postResponseDtoList));
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateRequest postUpdateRequest) {
         PostResponseDto postResponseDto = postService.updatePost(id, postUpdateRequest);
-        return ResponseEntity.ok(PostResponse.from("post update success", postResponseDto));
+        return ResponseEntity.ok(PostResponse.from(Message.POST_UPDATE_SUCCESS.getMessage(), postResponseDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<PostResponse> deletePost(@PathVariable Long id) {
         postService.deletePost(id);
-        return ResponseEntity.ok(PostResponse.from("post deletion success"));
+        return ResponseEntity.ok(PostResponse.from(Message.POST_DELETE_SUCCESS.getMessage()));
     }
 }

@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class UserResponse<T> {
 
-    private String message;
+    private final String message;
 
-    private T data;
+    private final T data;
 
     public UserResponse(String message, T data) {
         this.message = message;
