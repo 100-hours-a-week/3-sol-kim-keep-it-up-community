@@ -8,6 +8,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(name = "UniquePostIdAndUserId", columnNames = {"user_id", "post_id"})
+        }
+)
 public class PostLike {
 
     @Id
