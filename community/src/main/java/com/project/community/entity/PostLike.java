@@ -28,7 +28,7 @@ public class PostLike {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // 좋아요 목록 기능 / 좋아요한 포스트들 좋아요한 최신순으로 모아보기 기능 등으로의 확장 시 필요
 
     public PostLike(User user, Post post) {
         this.user = user;

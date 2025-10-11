@@ -1,5 +1,6 @@
 package com.project.community.controller;
 
+import com.project.community.dto.PostLikeResponseDto;
 import com.project.community.dto.request.PostLikeRequest;
 import com.project.community.dto.response.PostLikeResponse;
 import com.project.community.service.PostLikeService;
@@ -22,12 +23,11 @@ public class PostLikeController {
                 .body(PostLikeResponse.from("Like registered."));
     }
 
-//    @GetMapping
-//    public ResponseEntity<PostLikeResponse> registerLike(@PathVariable Long postId, @RequestBody PostLikeRequest postLikeRequest) {
-//        postLikeService.registerPostLike(postId,postLikeRequest);
-//        return ResponseEntity.status(HttpStatus.CREATED)
-//                .body(PostLikeResponse.from("Like registered."));
-//    }
+    @GetMapping
+    public ResponseEntity<PostLikeResponse> getIsLiked(@PathVariable Long postId, @RequestBody PostLikeRequest postLikeRequest) {
+        PostLikeResponseDto postLikeResponseDto = postLikeService.getIsPostLiked(postId, postLikeRequest);
+        return ResponseEntity.ok(PostLikeResponse.from("Like info fetched", postLikeResponseDto));
+    }
 
     @DeleteMapping
     public ResponseEntity<PostLikeResponse> cancelLike(@PathVariable Long postId, @RequestBody PostLikeRequest likeRequest) {

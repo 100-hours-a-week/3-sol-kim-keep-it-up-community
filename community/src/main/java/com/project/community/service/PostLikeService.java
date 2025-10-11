@@ -1,5 +1,6 @@
 package com.project.community.service;
 
+import com.project.community.dto.PostLikeResponseDto;
 import com.project.community.dto.request.PostLikeRequest;
 import com.project.community.entity.PostLike;
 import com.project.community.entity.Post;
@@ -39,5 +40,15 @@ public class PostLikeService {
         PostLike postLike = postLikeRepository.findByUserIdAndPostId(postLikeRequest.getUserId(), postId);
         post.decreaseLikesCount();
         postLikeRepository.delete(postLike);
+    }
+
+    public PostLikeResponseDto getIsPostLiked(Long postId, PostLikeRequest postLikeRequest) {
+        PostLikeResponseDto postLikeResponseDto = new PostLikeResponseDto();
+        if (postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId)) {
+            postLikeResponseDto.setLiked(true);
+        } else {
+            postLikeResponseDto.setLiked(false);
+        }
+        return postLikeResponseDto;
     }
 }
