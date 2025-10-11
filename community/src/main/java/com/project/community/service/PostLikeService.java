@@ -23,9 +23,10 @@ public class PostLikeService {
     private final PostRepository postRepository;
 
     @Transactional
-    public void registerPostLike(PostLikeRequest postLikeRequest) {
+    public void registerPostLike(Long postId, PostLikeRequest postLikeRequest) {
         User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
-        Post post = postRepository.findById(postLikeRequest.getPostId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
+        if (postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId)) throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage.ALREADY_LIKED.getMessage());
         PostLike postLike = new PostLike(user, post);
         postLikeRepository.save(postLike);
     }

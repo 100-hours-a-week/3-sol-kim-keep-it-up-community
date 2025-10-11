@@ -6,5 +6,5 @@ import lombok.Getter;
 public class PostLikeRequest {
 
     private Long userId;
-    private Long postId;
+//    private Long postId;
 }

@@ -10,7 +10,8 @@ public enum ErrorMessage {
     POST_NOT_FOUND("Post not found"),
     POST_GONE("Post has been deleted."),
     COMMENT_NOT_FOUND("Comment not found."),
-    COMMENT_ALREADY_GONE("Already deleted comment");
+    COMMENT_ALREADY_GONE("Already deleted comment"),
+    ALREADY_LIKED("Already liked.");
 
     private String message;
 

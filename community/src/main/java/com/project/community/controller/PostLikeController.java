@@ -9,15 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/likes")
+@RequestMapping("/posts/{postId}/likes")
 @RequiredArgsConstructor
 public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
     @PostMapping
-    public ResponseEntity<PostLikeResponse> registerLike(@RequestBody PostLikeRequest postLikeRequest) {
-        postLikeService.registerPostLike(postLikeRequest);
+    public ResponseEntity<PostLikeResponse> registerLike(@PathVariable Long postId, @RequestBody PostLikeRequest postLikeRequest) {
+        postLikeService.registerPostLike(postId,postLikeRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(PostLikeResponse.from("Like registered."));
     }
