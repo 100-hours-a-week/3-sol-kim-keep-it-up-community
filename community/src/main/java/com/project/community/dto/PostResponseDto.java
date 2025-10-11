@@ -13,4 +13,5 @@ public class PostResponseDto {
     private final String contents;
     private final UserResponseDto writer;
     private final LocalDateTime createdAt;
+    private final int likesCount;
 }

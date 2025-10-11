@@ -28,6 +28,7 @@ public class PostLikeService {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
         if (postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId)) throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage.ALREADY_LIKED.getMessage());
         PostLike postLike = new PostLike(user, post);
+        post.increaseLikesCount();
         postLikeRepository.save(postLike);
     }
 
@@ -36,6 +37,7 @@ public class PostLikeService {
         User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
         PostLike postLike = postLikeRepository.findByUserIdAndPostId(postLikeRequest.getUserId(), postId);
+        post.decreaseLikesCount();
         postLikeRepository.delete(postLike);
     }
 }
