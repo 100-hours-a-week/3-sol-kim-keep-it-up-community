@@ -22,9 +22,9 @@ public class PostLikeController {
                 .body(PostLikeResponse.from("Like registered."));
     }
 
-//    @DeleteMapping
-//    public ResponseEntity<LikeResponse> cancelLike(@RequestBody LikeRequest likeRequest) {
-//        likeService.cancelLike(likeRequest);
-//        return ResponseEntity.ok(LikeResonse.from("like canceled."));
-//    }
+    @DeleteMapping
+    public ResponseEntity<PostLikeResponse> cancelLike(@PathVariable Long postId, @RequestBody PostLikeRequest likeRequest) {
+        postLikeService.cancelPostLike(postId, likeRequest);
+        return ResponseEntity.ok(PostLikeResponse.from("like canceled."));
+    }
 }

@@ -30,4 +30,12 @@ public class PostLikeService {
         PostLike postLike = new PostLike(user, post);
         postLikeRepository.save(postLike);
     }
+
+    @Transactional
+    public void cancelPostLike(Long postId, PostLikeRequest postLikeRequest) {
+        User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
+        PostLike postLike = postLikeRepository.findByUserIdAndPostId(postLikeRequest.getUserId(), postId);
+        postLikeRepository.delete(postLike);
+    }
 }
