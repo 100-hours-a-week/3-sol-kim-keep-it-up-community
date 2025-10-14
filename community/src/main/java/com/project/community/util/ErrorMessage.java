@@ -5,6 +5,8 @@ public enum ErrorMessage {
     EMAIL_CONFLICT("Email has already been taken"),
     NICKNAME_CONFLICT("Nickname has already been taken"),
     USER_NOT_FOUND("User not found"),
+    WRONG_PASSWORD("Wrong Password"),
+    WRONG_EMAIL("Wrong Email"),
     USER_GONE("User has withdrawn"),
     USER_ALREADY_GONE("User has already withdrawn"),
     POST_NOT_FOUND("Post not found"),

@@ -4,6 +4,7 @@ package com.project.community.controller;
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
 import com.project.community.dto.request.UserProfileUpdateRequest;
+import com.project.community.dto.request.UserSignInRequest;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.dto.response.UserResponse;
 import com.project.community.service.UserService;
@@ -25,6 +26,12 @@ public class UserController {
         UserResponseDto userResponseDto = userService.createUser(userSignUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(UserResponse.from(Message.SIGNUP_SUCCESS.getMessage(),userResponseDto));
+    }
+
+    @PostMapping("/signin")
+    public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest) {
+        UserResponseDto userResponseDto = userService.signIn(userSignInRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.SIGNIN_SUCCESS.getMessage(),userResponseDto));
     }
 
     @GetMapping("/{id}")

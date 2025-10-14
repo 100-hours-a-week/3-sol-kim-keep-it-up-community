@@ -3,6 +3,7 @@ package com.project.community.service;
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
 import com.project.community.dto.request.UserProfileUpdateRequest;
+import com.project.community.dto.request.UserSignInRequest;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.entity.User;
 import com.project.community.repository.UserRepository;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,6 +43,16 @@ public class UserService {
 
         User user = new User(nickname, userSignUpRequest.getEmail(), encryptedPassword);
         userRepository.save(user);
+        return UserMapper.toResponseDto(user);
+    }
+
+    public UserResponseDto signIn(UserSignInRequest userSignInRequest) {
+        String email = userSignInRequest.getEmail();
+        User user = userRepository.findByEmail(email);
+        if (user == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_EMAIL.getMessage());
+        if (!bCryptPasswordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_PASSWORD.getMessage());
+        }
         return UserMapper.toResponseDto(user);
     }
 
@@ -72,4 +85,5 @@ public class UserService {
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
     }
+
 }
