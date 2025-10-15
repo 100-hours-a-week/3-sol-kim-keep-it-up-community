@@ -2,6 +2,7 @@ package com.project.community.service;
 
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
+import com.project.community.dto.request.UserPasswordUpdateRequest;
 import com.project.community.dto.request.UserProfileUpdateRequest;
 import com.project.community.dto.request.UserSignInRequest;
 import com.project.community.dto.request.UserSignUpRequest;
@@ -78,6 +79,16 @@ public class UserService {
     }
 
     @Transactional
+    public UserResponseDto updatePassword(Long id, UserPasswordUpdateRequest userPasswordUpdateRequest) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
+        if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.USER_GONE.getMessage());
+        String password = userPasswordUpdateRequest.getPassword();
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        userRepository.save(user);
+        return UserMapper.toResponseDto(user);
+    }
+
+    @Transactional
     public UserResponseDto withdraw(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
         if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.USER_ALREADY_GONE.getMessage());
@@ -85,5 +96,4 @@ public class UserService {
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
     }
-
 }

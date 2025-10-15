@@ -3,6 +3,7 @@ package com.project.community.controller;
 
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
+import com.project.community.dto.request.UserPasswordUpdateRequest;
 import com.project.community.dto.request.UserProfileUpdateRequest;
 import com.project.community.dto.request.UserSignInRequest;
 import com.project.community.dto.request.UserSignUpRequest;
@@ -44,6 +45,12 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUserInfo(@PathVariable Long id, @RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
         UserResponseDto userResponseDto = userService.updateProfile(id, userProfileUpdateRequest);
         return ResponseEntity.ok(UserResponse.from(Message.PROFILE_UPDATE_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<UserResponse> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
+        UserResponseDto userResponseDto = userService.updatePassword(id, userPasswordUpdateRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.PASSWORD_UPDATE_SUCCESS.getMessage(), userResponseDto));
     }
 
     @DeleteMapping("/{id}")
