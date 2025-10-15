@@ -46,7 +46,7 @@ public class UserService {
     public UserResponseDto signIn(UserSignInRequest userSignInRequest) {
         String email = userSignInRequest.getEmail();
         User user = userRepository.findByEmail(email);
-        if (user == null) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        if (user == null) throw new CustomException(ErrorCode.WRONG_EMAIL);
         if (!bCryptPasswordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.WRONG_PASSORD);
         }

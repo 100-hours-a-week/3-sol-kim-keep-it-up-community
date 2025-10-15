@@ -9,7 +9,8 @@ public enum ErrorCode {
 
     EMAIL_CONFLICT(HttpStatus.CONFLICT, ErrorMessage.EMAIL_CONFLICT.getMessage()),
     NICKNAME_CONFLICT(HttpStatus.CONFLICT, ErrorMessage.NICKNAME_CONFLICT.getMessage()),
-    USER_NOT_FOUND(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_EMAIL.getMessage()),
+    WRONG_EMAIL(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_EMAIL.getMessage()),
+    USER_NOT_FOUND(HttpStatus.UNAUTHORIZED, ErrorMessage.USER_NOT_FOUND.getMessage()),
     WRONG_PASSORD(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_PASSWORD.getMessage()),
     USER_GONE(HttpStatus.GONE, ErrorMessage.USER_GONE.getMessage()),
     USER_ALREADY_GONE(HttpStatus.GONE, ErrorMessage.USER_ALREADY_GONE.getMessage());
