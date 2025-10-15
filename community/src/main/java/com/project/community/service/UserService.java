@@ -2,7 +2,9 @@ package com.project.community.service;
 
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
+import com.project.community.dto.request.UserPasswordUpdateRequest;
 import com.project.community.dto.request.UserProfileUpdateRequest;
+import com.project.community.dto.request.UserSignInRequest;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.entity.User;
 import com.project.community.repository.UserRepository;
@@ -14,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,6 +47,16 @@ public class UserService {
         return UserMapper.toResponseDto(user);
     }
 
+    public UserResponseDto signIn(UserSignInRequest userSignInRequest) {
+        String email = userSignInRequest.getEmail();
+        User user = userRepository.findByEmail(email);
+        if (user == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_EMAIL.getMessage());
+        if (!bCryptPasswordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_PASSWORD.getMessage());
+        }
+        return UserMapper.toResponseDto(user);
+    }
+
     public UserProfileResponseDto getUserInfo(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
         if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.USER_GONE.getMessage());
@@ -60,6 +74,16 @@ public class UserService {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage.NICKNAME_CONFLICT.getMessage());
         }
         user.setNickname(nickname);
+        userRepository.save(user);
+        return UserMapper.toResponseDto(user);
+    }
+
+    @Transactional
+    public UserResponseDto updatePassword(Long id, UserPasswordUpdateRequest userPasswordUpdateRequest) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
+        if (user.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.USER_GONE.getMessage());
+        String password = userPasswordUpdateRequest.getPassword();
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
     }

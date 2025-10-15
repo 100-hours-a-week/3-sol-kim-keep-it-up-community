@@ -3,7 +3,9 @@ package com.project.community.controller;
 
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
+import com.project.community.dto.request.UserPasswordUpdateRequest;
 import com.project.community.dto.request.UserProfileUpdateRequest;
+import com.project.community.dto.request.UserSignInRequest;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.dto.response.UserResponse;
 import com.project.community.service.UserService;
@@ -27,6 +29,12 @@ public class UserController {
                 .body(UserResponse.from(Message.SIGNUP_SUCCESS.getMessage(),userResponseDto));
     }
 
+    @PostMapping("/signin")
+    public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest) {
+        UserResponseDto userResponseDto = userService.signIn(userSignInRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.SIGNIN_SUCCESS.getMessage(),userResponseDto));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserInfo(@PathVariable Long id) {
         UserProfileResponseDto userProfileResponseDto = userService.getUserInfo(id);
@@ -37,6 +45,12 @@ public class UserController {
     public ResponseEntity<UserResponse> updateUserInfo(@PathVariable Long id, @RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
         UserResponseDto userResponseDto = userService.updateProfile(id, userProfileUpdateRequest);
         return ResponseEntity.ok(UserResponse.from(Message.PROFILE_UPDATE_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    @PatchMapping("/{id}/password")
+    public ResponseEntity<UserResponse> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
+        UserResponseDto userResponseDto = userService.updatePassword(id, userPasswordUpdateRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.PASSWORD_UPDATE_SUCCESS.getMessage(), userResponseDto));
     }
 
     @DeleteMapping("/{id}")

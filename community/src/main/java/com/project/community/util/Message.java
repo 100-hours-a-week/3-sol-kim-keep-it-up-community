@@ -3,8 +3,10 @@ package com.project.community.util;
 public enum Message {
 
     SIGNUP_SUCCESS("signup success"),
+    SIGNIN_SUCCESS("sign in success"),
     USER_INFO_FETCHED("user info fetched"),
     PROFILE_UPDATE_SUCCESS("profile updated"),
+    PASSWORD_UPDATE_SUCCESS("password updated"),
     WITHDRAWAL_SUCCESS("withdrawal success"),
     POST_PUBLISHED("post published"),
     POST_FETCHED("post fetched"),
