@@ -13,9 +13,10 @@ public enum ErrorMessage {
     POST_GONE("Post has been deleted."),
     COMMENT_NOT_FOUND("Comment not found."),
     COMMENT_ALREADY_GONE("Already deleted comment"),
-    ALREADY_LIKED("Already liked.");
+    ALREADY_LIKED("Already liked."),
+    LIKE_NOT_FOUND("No Like to be canceled.");
 
-    private String message;
+    private final String message;
 
     ErrorMessage(String message) {
         this.message = message;
