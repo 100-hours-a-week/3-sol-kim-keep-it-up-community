@@ -1,5 +1,7 @@
 package com.project.community.service;
 
+import com.project.community.common.CustomException;
+import com.project.community.common.ErrorCode;
 import com.project.community.dto.PostLikeResponseDto;
 import com.project.community.dto.request.PostLikeRequest;
 import com.project.community.entity.PostLike;
@@ -8,12 +10,9 @@ import com.project.community.entity.User;
 import com.project.community.repository.PostLikeRepository;
 import com.project.community.repository.UserRepository;
 import com.project.community.repository.PostRepository;
-import com.project.community.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,30 +24,36 @@ public class PostLikeService {
 
     @Transactional
     public void registerPostLike(Long postId, PostLikeRequest postLikeRequest) {
-        User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
-        if (postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId)) throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage.ALREADY_LIKED.getMessage());
+        User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        if (user.isDeleted()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        if (postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId)) throw new CustomException(ErrorCode.ALREADY_LIKED);
         PostLike postLike = new PostLike(user, post);
         post.increaseLikesCount();
         postLikeRepository.save(postLike);
     }
 
+    public PostLikeResponseDto getIsPostLiked(Long postId, PostLikeRequest postLikeRequest) {
+        PostLikeResponseDto postLikeResponseDto = new PostLikeResponseDto();
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        if (user.isDeleted()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        postLikeResponseDto.setLiked(postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId));
+        return postLikeResponseDto;
+    }
+
     @Transactional
     public void cancelPostLike(Long postId, PostLikeRequest postLikeRequest) {
-        User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
-        PostLike postLike = postLikeRepository.findByUserIdAndPostId(postLikeRequest.getUserId(), postId);
+        User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        if (user.isDeleted()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        PostLike postLike = postLikeRepository.findByUserIdAndPostId(user.getId(), postId);
+        if (postLike == null) throw new CustomException(ErrorCode.NO_LIKE_TO_CANCEL);
         post.decreaseLikesCount();
         postLikeRepository.delete(postLike);
     }
 
-    public PostLikeResponseDto getIsPostLiked(Long postId, PostLikeRequest postLikeRequest) {
-        PostLikeResponseDto postLikeResponseDto = new PostLikeResponseDto();
-        if (postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId)) {
-            postLikeResponseDto.setLiked(true);
-        } else {
-            postLikeResponseDto.setLiked(false);
-        }
-        return postLikeResponseDto;
-    }
 }
