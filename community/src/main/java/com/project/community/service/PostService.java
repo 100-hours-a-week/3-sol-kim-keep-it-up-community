@@ -41,7 +41,7 @@ public class PostService {
     public List<PostResponseDto> getPostList() {
         return  postRepository.findAllByIsDeletedFalse()
                 .stream()
-                .map(p -> PostMapper.toResponseDto(p))
+                .map(PostMapper::toResponseDto)
                 .toList();
     }
 
@@ -58,6 +58,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
         post.setDeleted(true);
         postRepository.save(post);
     }
