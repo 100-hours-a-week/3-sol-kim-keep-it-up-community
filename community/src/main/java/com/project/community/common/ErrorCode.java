@@ -14,7 +14,10 @@ public enum ErrorCode {
     WRONG_PASSORD(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_PASSWORD.getMessage()),
     USER_GONE(HttpStatus.GONE, ErrorMessage.USER_GONE.getMessage()),
     USER_ALREADY_GONE(HttpStatus.GONE, ErrorMessage.USER_ALREADY_GONE.getMessage()),
-    POST_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage());
+    POST_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()),
+    POST_DELETED(HttpStatus.GONE, ErrorMessage.POST_GONE.getMessage()),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorMessage.COMMENT_NOT_FOUND.getMessage()),
+    COMMENT_ALREADY_DELETED(HttpStatus.GONE, ErrorMessage.COMMENT_ALREADY_GONE.getMessage());
     private final HttpStatus httpStatus;
     private final String errorMessage;
 

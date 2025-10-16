@@ -1,5 +1,7 @@
 package com.project.community.service;
 
+import com.project.community.common.CustomException;
+import com.project.community.common.ErrorCode;
 import com.project.community.dto.CommentResponseDto;
 import com.project.community.dto.request.CommentPostRequest;
 import com.project.community.dto.request.CommentUpdateRequest;
@@ -10,12 +12,9 @@ import com.project.community.repository.CommentRepository;
 import com.project.community.repository.PostRepository;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.CommentMapper;
-import com.project.community.util.ErrorMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -29,9 +28,9 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto createComment(CommentPostRequest commentPostRequest) {
-        User user = userRepository.findById(commentPostRequest.getWriterId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.USER_NOT_FOUND.getMessage()));
-        Post post = postRepository.findById(commentPostRequest.getPostId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
-        if (post.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.POST_GONE.getMessage());
+        User user = userRepository.findById(commentPostRequest.getWriterId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        Post post = postRepository.findById(commentPostRequest.getPostId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_DELETED);
 
         Comment comment = CommentMapper.toComment(user, post, commentPostRequest);
         post.addComment(comment);
@@ -41,15 +40,16 @@ public class CommentService {
     }
 
     public List<CommentResponseDto> getPostComments(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.POST_NOT_FOUND.getMessage()));
-        if (post.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.POST_GONE.getMessage());
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_DELETED);
         List<Comment> commentList = post.getCommentList();
         return commentList.stream().map(c -> CommentMapper.toResponseDto(c)).toList();
     }
 
     @Transactional
     public CommentResponseDto updateComment(Long id, CommentUpdateRequest commentUpdateRequest) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.COMMENT_NOT_FOUND.getMessage()));
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if (comment.isDeleted()) throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
         comment.setContents(commentUpdateRequest.getContents());
         commentRepository.save(comment);
         return CommentMapper.toResponseDto(comment);
@@ -57,11 +57,11 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ErrorMessage.COMMENT_NOT_FOUND.getMessage()));
-        if (comment.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.COMMENT_ALREADY_GONE.getMessage());
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+        if (comment.isDeleted()) throw new CustomException(ErrorCode.COMMENT_ALREADY_DELETED);
         comment.setDeleted(true);
-        Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.POST_NOT_FOUND.getMessage()));
-        if (post.isDeleted()) throw new ResponseStatusException(HttpStatus.GONE, ErrorMessage.POST_GONE.getMessage());
+        Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_DELETED);
         post.deleteComment(comment);
     }
 }
