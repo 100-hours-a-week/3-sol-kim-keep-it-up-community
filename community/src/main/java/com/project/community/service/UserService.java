@@ -47,6 +47,7 @@ public class UserService {
         String email = userSignInRequest.getEmail();
         User user = userRepository.findByEmail(email);
         if (user == null) throw new CustomException(ErrorCode.WRONG_EMAIL);
+        if (user.isDeleted()) throw new CustomException(ErrorCode.USER_GONE);
         if (!bCryptPasswordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.WRONG_PASSORD);
         }
