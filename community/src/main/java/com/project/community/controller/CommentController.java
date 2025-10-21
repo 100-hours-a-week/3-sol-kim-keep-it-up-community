@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/comments")
+@RequestMapping("posts/{postId}/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -28,7 +28,7 @@ public class CommentController {
                 .body(CommentResponse.from(Message.COMMENT_POST_SUCCESS.getMessage(), commentResponseDto));
     }
 
-    @GetMapping("/{postId}")
+    @GetMapping()
     public ResponseEntity<CommentResponse> getPostComments(@PathVariable Long postId) {
         List<CommentResponseDto> commentResponseDtoList = commentService.getPostComments(postId);
         return ResponseEntity.ok(CommentResponse.from(Message.POST_COMMENT_FETCHED.getMessage(), commentResponseDtoList));
