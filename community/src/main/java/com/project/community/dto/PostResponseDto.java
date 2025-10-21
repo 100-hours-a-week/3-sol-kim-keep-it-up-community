@@ -14,7 +14,7 @@ public class PostResponseDto {
     private final UserResponseDto writer;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
+    private final int viewsCount;
     private final int commentsCount;
     private final int likesCount;
-    private final int viewsCount;
 }

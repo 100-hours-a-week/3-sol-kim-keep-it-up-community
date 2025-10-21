@@ -11,6 +11,13 @@ public class PostMapper {
     }
 
     public static PostResponseDto toResponseDto(Post post) {
-        return new PostResponseDto(post.getId(), post.getTitle(), post.getContents(), UserMapper.toResponseDto(post.getWriter()), post.getCreatedAt(), post.getLikesCount());
+        return new PostResponseDto(post.getId(),
+                post.getTitle(),
+                post.getContents(),
+                UserMapper.toResponseDto(post.getWriter()),
+                post.getCreatedAt(),
+                post.getViewsCount(),
+                post.getCommentsCount(),
+                post.getLikesCount());
     }
 }

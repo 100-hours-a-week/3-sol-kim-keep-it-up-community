@@ -51,4 +51,10 @@ public class PostController {
         postService.deletePost(id);
         return ResponseEntity.ok(PostResponse.from(Message.POST_DELETE_SUCCESS.getMessage()));
     }
+
+    @PatchMapping("/{id}/viewcount")
+    public ResponseEntity<PostResponse> increaseViewsCount(@PathVariable Long id) {
+        PostResponseDto postResponseDto = postService.increaseViewsCount(id);
+        return ResponseEntity.ok(PostResponse.from(Message.POST_VIEW_COUNT_UPDATED.getMessage(), postResponseDto));
+    }
 }

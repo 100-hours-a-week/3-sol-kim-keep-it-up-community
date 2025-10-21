@@ -45,6 +45,10 @@ public class Post {
 
     private int likesCount = 0;
 
+    private int viewsCount = 0;
+
+    private int commentsCount = 0;
+
     public Post(String title, String contents, User writer) {
         this.title = title;
         this.contents = contents;
@@ -54,10 +58,12 @@ public class Post {
 
     public void addComment(Comment comment) {
         commentList.add(comment);
+        commentsCount += 1;
     }
 
     public void deleteComment(Comment comment) {
         commentList.remove(comment);
+        commentsCount -= 1;
     }
 
     public void increaseLikesCount() {
@@ -66,5 +72,9 @@ public class Post {
 
     public void decreaseLikesCount() {
         likesCount -= 1;
+    }
+
+    public void increaseViewsCount() {
+        viewsCount += 1;
     }
 }
