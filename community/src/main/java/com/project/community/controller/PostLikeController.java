@@ -24,9 +24,9 @@ public class PostLikeController {
                 .body(PostLikeResponse.from(Message.POST_LIKE_REGISTERED.getMessage()));
     }
 
-    @GetMapping
-    public ResponseEntity<PostLikeResponse> getIsLiked(@PathVariable Long postId, @RequestBody PostLikeRequest postLikeRequest) {
-        PostLikeResponseDto postLikeResponseDto = postLikeService.getIsPostLiked(postId, postLikeRequest);
+    @GetMapping("/{userId}")
+    public ResponseEntity<PostLikeResponse> getIsLiked(@PathVariable Long postId, @PathVariable Long userId) {
+        PostLikeResponseDto postLikeResponseDto = postLikeService.getIsPostLiked(postId, userId);
         return ResponseEntity.ok(PostLikeResponse.from(Message.POST_LIKE_IS_LIKED_FETCHED.getMessage(), postLikeResponseDto));
     }
 

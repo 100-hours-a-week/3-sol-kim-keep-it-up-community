@@ -34,13 +34,13 @@ public class PostLikeService {
         postLikeRepository.save(postLike);
     }
 
-    public PostLikeResponseDto getIsPostLiked(Long postId, PostLikeRequest postLikeRequest) {
+    public PostLikeResponseDto getIsPostLiked(Long postId, Long userId) {
         PostLikeResponseDto postLikeResponseDto = new PostLikeResponseDto();
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
-        User user = userRepository.findById(postLikeRequest.getUserId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (user.isDeleted()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        postLikeResponseDto.setLiked(postLikeRepository.existsByUserIdAndPostId(postLikeRequest.getUserId(), postId));
+        postLikeResponseDto.setLiked(postLikeRepository.existsByUserIdAndPostId(userId, postId));
         return postLikeResponseDto;
     }
 
