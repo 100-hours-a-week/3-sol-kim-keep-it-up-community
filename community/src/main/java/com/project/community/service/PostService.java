@@ -62,4 +62,13 @@ public class PostService {
         post.setDeleted(true);
         postRepository.save(post);
     }
+
+    @Transactional
+    public PostResponseDto increaseViewsCount(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
+        post.increaseViewsCount();
+        postRepository.save(post);
+        return PostMapper.toResponseDto(post);
+    }
 }

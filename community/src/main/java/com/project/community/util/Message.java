@@ -19,7 +19,8 @@ public enum Message {
     COMMENT_DELETED("comment deleted"),
     POST_LIKE_REGISTERED("like registered."),
     POST_LIKE_IS_LIKED_FETCHED("like info fetched"),
-    POST_LIKE_CANCELED("like canceled.");
+    POST_LIKE_CANCELED("like canceled."),
+    POST_VIEW_COUNT_UPDATED("Post view count updated.");
 
 
     private final String message;
