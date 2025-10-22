@@ -6,12 +6,15 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Comment {
 
     @Id
@@ -31,7 +34,8 @@ public class Comment {
     @NotBlank
     private String contents;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(name = "is_deleted", nullable = false)
@@ -41,6 +45,5 @@ public class Comment {
         this.contents = contents;
         this.writer = writer;
         this.post = post;
-        this.createdAt = LocalDateTime.now();
     }
 }

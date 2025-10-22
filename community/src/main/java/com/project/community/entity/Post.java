@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id
@@ -32,7 +35,8 @@ public class Post {
     @JoinColumn(name = "writer_id")
     private User writer;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at")
+    @CreatedDate
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
@@ -53,7 +57,6 @@ public class Post {
         this.title = title;
         this.contents = contents;
         this.writer = writer;
-        createdAt = LocalDateTime.now();
     }
 
     public void addComment(Comment comment) {
