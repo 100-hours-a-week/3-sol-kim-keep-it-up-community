@@ -7,11 +7,14 @@ import com.project.community.dto.response.PostResponse;
 import com.project.community.service.PostService;
 import com.project.community.util.Message;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -35,8 +38,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<PostResponse> getPostList() {
-        List<PostResponseDto> postResponseDtoList = postService.getPostList();
+    public ResponseEntity<PostResponse> getPostList(@RequestParam(required = false) Long cursorId,
+                                                    @RequestParam(defaultValue = "20") int size) {
+        Slice<PostResponseDto> postResponseDtoList = postService.getPostList(cursorId, size);
         return ResponseEntity.ok(PostResponse.from(Message.POST_LIST_FETCHED.getMessage(), postResponseDtoList));
     }
 

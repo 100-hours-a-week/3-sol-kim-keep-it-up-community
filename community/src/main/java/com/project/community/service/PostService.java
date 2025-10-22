@@ -9,12 +9,20 @@ import com.project.community.entity.Post;
 import com.project.community.entity.User;
 import com.project.community.repository.PostRepository;
 import com.project.community.repository.UserRepository;
+import io.micrometer.common.lang.Nullable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.project.community.util.PostMapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Order.desc;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +46,16 @@ public class PostService {
         return PostMapper.toResponseDto(post);
     }
 
-    public List<PostResponseDto> getPostList() {
-        return  postRepository.findAllByIsDeletedFalse()
-                .stream()
-                .map(PostMapper::toResponseDto)
-                .toList();
+    public Slice<PostResponseDto> getPostList(@Nullable Long cursorId, int size) {
+        Pageable pageable = PageRequest.of(0, size, Sort.by(desc("id")));
+        Slice<Post> slice;
+        if (cursorId == null) {
+            slice = postRepository.findFirstSlice(pageable);
+        } else {
+            slice = postRepository.findNextSlice(cursorId, pageable);
+        }
+
+        return  slice.map(PostMapper::toResponseDto);
     }
 
     @Transactional
