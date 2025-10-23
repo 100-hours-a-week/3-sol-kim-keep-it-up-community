@@ -20,7 +20,8 @@ public enum Message {
     POST_LIKE_REGISTERED("like registered."),
     POST_LIKE_IS_LIKED_FETCHED("like info fetched"),
     POST_LIKE_CANCELED("like canceled."),
-    POST_VIEW_COUNT_UPDATED("Post view count updated.");
+    POST_VIEW_COUNT_UPDATED("Post view count updated."),
+    PROFILE_IMAGE_POST_SUCCESS("Profile image is uploaded.");
 
 
     private final String message;
