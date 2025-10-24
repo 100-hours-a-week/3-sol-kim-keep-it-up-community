@@ -38,13 +38,15 @@ public class ImageService {
     @Transactional
     public ImagePostResponseDto uploadProfileImage(ProfileUploadRequest request) {
         MultipartFile file = request.getFile();
+        Long userId = request.getUserId();
 
-        String filename = file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
 //        String path = LocalDateTime.now() + File.separator + filename;
-        String path = LocalDateTime.now() + "_" + filename;
-        Image image = new Image(path, filename, file.getSize(), "profile");
+        String filename = LocalDateTime.now() + "_" + originalFilename;
+        Image image = new Image(filename, originalFilename, file.getSize(), userId,"profile");
 
-        Path imageFilePath = Paths.get(uploadDirectory + path);
+//        Path imageFilePath = Paths.get(uploadDirectory + filename);
+        Path imageFilePath = Paths.get(uploadDirectory, filename);
 
         try {
 //            Files.write(imageFilePath, filename.getBytes()); ->  파일 저장 후 파일이 손상되었거나 미리보기가 인식하지 않는 파일 포맷을 사용합니다.
@@ -57,8 +59,9 @@ public class ImageService {
         return ImageMapper.toResponseDto(image);
     }
 
-//    public ImageResponseDto getUserProfileImage(Long userId) {
-//        Image image = imageRepository.findByTypeAndUserId("profile", userId);
-//
-//    }
+    public ImageResponseDto getUserProfileImage(Long userId) {
+        Image profileImage = imageRepository.findByTypeAndUserId("profile", userId);
+        String filename = profileImage.getFilename();
+        return ImageMapper.toResponseDto("images/" + filename);
+    }
 }

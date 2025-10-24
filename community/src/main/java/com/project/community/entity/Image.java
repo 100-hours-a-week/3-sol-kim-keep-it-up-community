@@ -14,9 +14,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
     Long id;
-    String path;
-
     String filename;
+
+    String originalFilename;
 
     Long size;
 
@@ -24,9 +24,13 @@ public class Image {
 
     Long postId;
 
-    public Image(String path, String filename, Long size) {
-        this.path = path;
+    String type;
+
+    public Image(String filename, String originalFilename, Long size, Long userId, String type) {
         this.filename = filename;
+        this.originalFilename = originalFilename;
         this.size = size;
+        this.userId = userId;
+        this.type = type;
     }
 }
