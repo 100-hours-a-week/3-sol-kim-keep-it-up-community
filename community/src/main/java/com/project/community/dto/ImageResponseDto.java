@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class ImageResponseDto {
-    private final Long id;
+
+    private final String url;
 }
