@@ -14,7 +14,8 @@ public enum ErrorMessage {
     COMMENT_NOT_FOUND("Comment not found."),
     COMMENT_ALREADY_GONE("Already deleted comment"),
     ALREADY_LIKED("Already liked."),
-    LIKE_NOT_FOUND("No Like to be canceled.");
+    LIKE_NOT_FOUND("No Like to be canceled."),
+    PROFILE_IMAGE_NOT_SET("Profile image is not set");
 
     private final String message;
 

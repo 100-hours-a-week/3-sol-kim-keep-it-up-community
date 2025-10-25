@@ -6,6 +6,7 @@ import com.project.community.dto.request.ProfileUploadRequest;
 import com.project.community.dto.response.ImageResponse;
 import com.project.community.service.ImageService;
 import com.project.community.util.Message;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +35,11 @@ public class ImageController {
         return ResponseEntity.ok(ImageResponse.from(Message.PROFILE_IMAGE_RETURNED.getMessage(), imageResponseDto));
     }
 
-//    @PutMapping("/profiles")
-//    public ResponseEntity<ImageResponse> updateProfileImage() {
-//
-//    }
+    @PutMapping("/profiles")
+    public ResponseEntity<ImageResponse> updateProfileImage(@Valid ProfileUploadRequest request) {
+        ImagePostResponseDto imagePostResponseDto = imageService.updateUserProfileImage(request);
+        return ResponseEntity.ok(ImageResponse.from(Message.PROFILE_IMAGE_UPDATED.getMessage(), imagePostResponseDto));
+    }
 //
 //    @PostMapping("/posts")
 //    public ResponseEntity<ImageResponse> uploadPostImage() {

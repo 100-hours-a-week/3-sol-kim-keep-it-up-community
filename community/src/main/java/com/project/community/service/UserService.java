@@ -67,7 +67,7 @@ public class UserService {
         String nickname = userProfileUpdateRequest.getNickname();
         if (userRepository.existsByNickname(nickname)) {
             User userNicknameDuplicated = userRepository.findByNickname(nickname);
-            if (!userNicknameDuplicated.isDeleted())
+            if (!userNicknameDuplicated.isDeleted() && !user.getId().equals(userNicknameDuplicated.getId()))
                 throw new CustomException(ErrorCode.NICKNAME_CONFLICT);
         }
         user.setNickname(nickname);

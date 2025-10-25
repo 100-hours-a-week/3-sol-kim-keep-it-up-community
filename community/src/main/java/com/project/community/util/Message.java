@@ -22,7 +22,8 @@ public enum Message {
     POST_LIKE_CANCELED("like canceled."),
     POST_VIEW_COUNT_UPDATED("Post view count updated."),
     PROFILE_IMAGE_POST_SUCCESS("Profile image is uploaded."),
-    PROFILE_IMAGE_RETURNED("Profile image is fetched");
+    PROFILE_IMAGE_RETURNED("Profile image is fetched."),
+    PROFILE_IMAGE_UPDATED("Profile image is updated.");
 
 
     private final String message;
