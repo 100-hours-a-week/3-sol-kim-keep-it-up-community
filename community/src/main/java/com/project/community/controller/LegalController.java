@@ -11,6 +11,10 @@ import java.time.LocalDate;
 @RequestMapping("/legal")
 public class LegalController {
 
+    /*
+    GET 이용약관 조회
+    => terms.html
+     */
     @GetMapping("/terms")
     public String terms(Model model) {
         model.addAttribute("serviceName", "keepit-up");
@@ -20,6 +24,10 @@ public class LegalController {
         return "legal/terms"; // resources/templates/legal/terms.html
     }
 
+    /*
+    GET 개인정보처리방침 조회
+    => privacy.html
+     */
     @GetMapping("/privacy")
     public String privacy(Model model) {
         model.addAttribute("serviceName", "keepit-up");

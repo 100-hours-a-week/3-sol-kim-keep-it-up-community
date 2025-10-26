@@ -17,6 +17,9 @@ public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
+    /*
+    POST 게시글 좋아요 등록
+     */
     @PostMapping
     public ResponseEntity<PostLikeResponse> registerLike(@PathVariable Long postId, @RequestBody PostLikeRequest postLikeRequest) {
         postLikeService.registerPostLike(postId,postLikeRequest);
@@ -24,12 +27,19 @@ public class PostLikeController {
                 .body(PostLikeResponse.from(Message.POST_LIKE_REGISTERED.getMessage()));
     }
 
+    /*
+    GET 게시글 좋아요 여부 조회
+    => 좋아요 여부
+     */
     @GetMapping("/{userId}")
     public ResponseEntity<PostLikeResponse> getIsLiked(@PathVariable Long postId, @PathVariable Long userId) {
         PostLikeResponseDto postLikeResponseDto = postLikeService.getIsPostLiked(postId, userId);
         return ResponseEntity.ok(PostLikeResponse.from(Message.POST_LIKE_IS_LIKED_FETCHED.getMessage(), postLikeResponseDto));
     }
 
+    /*
+    DELETE 좋아요 취소
+     */
     @DeleteMapping
     public ResponseEntity<PostLikeResponse> cancelLike(@PathVariable Long postId, @RequestBody PostLikeRequest likeRequest) {
         postLikeService.cancelPostLike(postId, likeRequest);

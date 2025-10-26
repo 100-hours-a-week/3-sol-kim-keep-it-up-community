@@ -21,7 +21,8 @@ public class ImageController {
     private final ImageService imageService;
 
     /*
-
+    POST 프로필 사진 등록
+    => 사진 id
      */
     @PostMapping("/profiles")
     public ResponseEntity<ImageResponse> uploadProfileImage(ProfileUploadRequest request) {
@@ -30,6 +31,10 @@ public class ImageController {
                 .body(ImageResponse.from(Message.PROFILE_IMAGE_POST_SUCCESS.getMessage(), imagePostResponseDto));
     }
 
+    /*
+    GET 프로필 사진 조회
+    => 사진 url
+     */
     @GetMapping("profiles/{userId}")
     public ResponseEntity<ImageResponse> getUserProfileImage(@PathVariable Long userId) {
         ImageResponseDto imageResponseDto = imageService.getUserProfileImage(userId);
@@ -43,18 +48,30 @@ public class ImageController {
         return ResponseEntity.ok(ImageResponse.from(Message.PROFILE_IMAGE_RETURNED.getMessage(), imageResponseDto));
     }
 
+    /*
+    PUT 프로필 사진 변경
+    => 사진 id
+     */
     @PutMapping("/profiles")
     public ResponseEntity<ImageResponse> updateProfileImage(@Valid ProfileUploadRequest request) {
         ImagePostResponseDto imagePostResponseDto = imageService.updateUserProfileImage(request);
         return ResponseEntity.ok(ImageResponse.from(Message.PROFILE_IMAGE_UPDATED.getMessage(), imagePostResponseDto));
     }
 
+    /*
+    POST 게시글 사진 등록
+    => 사진 id
+     */
     @PostMapping("/posts")
     public ResponseEntity<ImageResponse> uploadPostImage(@Valid PostImageUploadRequest request) {
         ImagePostResponseDto imagePostResponseDto = imageService.uploadPostImage(request);
         return ResponseEntity.ok(ImageResponse.from(Message.POST_IMAGE_UPLOADED.getMessage(), imagePostResponseDto));
     }
 
+    /*
+    GET 게시글 사진 조회
+    => 사진 url
+     */
     @GetMapping("/posts/{postId}")
     public ResponseEntity<ImageResponse> getPostImage(@PathVariable Long postId) {
         ImageResponseDto imageResponseDto = imageService.getPostImage(postId);
@@ -66,6 +83,10 @@ public class ImageController {
         return ResponseEntity.ok(ImageResponse.from(Message.POST_IMAGE_RETURNED.getMessage(), imageResponseDto));
     }
 
+    /*
+    PUT 게시글 사진 변경
+    => 사진 id
+     */
     @PutMapping("/posts/{postId}")
     public ResponseEntity<ImageResponse> updatePostImage(@Valid PostImageUploadRequest request) {
         ImagePostResponseDto imagePostResponseDto = imageService.updatePostImage(request);

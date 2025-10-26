@@ -11,9 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // /images/** → file:파일 업로드 위치의 현재 파일들
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("file:" + uploadDir)
-                .setCachePeriod(3600); // 선택: 캐시..
+                .setCachePeriod(3600);
     }
 }
