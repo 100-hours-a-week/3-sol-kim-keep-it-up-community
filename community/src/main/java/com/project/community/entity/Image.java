@@ -28,11 +28,19 @@ public class Image {
 
     String type;
 
-    public Image(String filename, String originalFilename, Long size, Long userId, String type) {
-        this.filename = filename;
-        this.originalFilename = originalFilename;
-        this.size = size;
-        this.userId = userId;
-        this.type = type;
+    public Image(String filename, String originalFilename, Long size, Long id, String type) {
+        if (type.equals("post")) {
+            this.filename = filename;
+            this.originalFilename = originalFilename;
+            this.size = size;
+            this.postId = id;
+            this.type = type;
+        } else {
+            this.filename = filename;
+            this.originalFilename = originalFilename;
+            this.size = size;
+            this.userId = id;
+            this.type = type;
+        }
     }
 }

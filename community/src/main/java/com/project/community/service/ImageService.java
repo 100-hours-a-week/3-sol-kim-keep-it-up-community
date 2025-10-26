@@ -1,12 +1,12 @@
 package com.project.community.service;
 
-import com.project.community.common.CustomException;
-import com.project.community.common.ErrorCode;
 import com.project.community.dto.ImagePostResponseDto;
 import com.project.community.dto.ImageResponseDto;
+import com.project.community.dto.request.PostImageUploadRequest;
 import com.project.community.dto.request.ProfileUploadRequest;
 import com.project.community.entity.Image;
 import com.project.community.repository.ImageRepository;
+import com.project.community.repository.UserRepository;
 import com.project.community.util.ImageMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 @Transactional(readOnly = true)
 public class ImageService {
     private final ImageRepository imageRepository;
+    private final UserRepository userRepository;
     @Value("${file.path}")
     private String uploadDirectory;
 
@@ -44,20 +45,19 @@ public class ImageService {
         Long userId = request.getUserId();
 
         String originalFilename = file.getOriginalFilename();
-//        String path = LocalDateTime.now() + File.separator + filename;
         String filename = LocalDateTime.now() + "_" + originalFilename;
         Image image = new Image(filename, originalFilename, file.getSize(), userId,"profile");
 
-//        Path imageFilePath = Paths.get(uploadDirectory + filename);
         Path imageFilePath = Paths.get(uploadDirectory, filename);
 
         try {
-//            Files.write(imageFilePath, filename.getBytes()); ->  파일 저장 후 '파일이 손상되었거나 미리보기가 인식하지 않는 파일 포맷을 사용합니다.' 에러 발생
             Files.copy(file.getInputStream(), imageFilePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+//        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+//        user.setProfileImageUrl("images/" + filename);
+//        userRepository.save(user);
         imageRepository.save(image);
         return ImageMapper.toResponseDto(image);
     }
@@ -65,7 +65,7 @@ public class ImageService {
     public ImageResponseDto getUserProfileImage(Long userId) {
         Image profileImage = imageRepository.findByTypeAndUserId("profile", userId);
         if (profileImage == null) {
-            throw new CustomException(ErrorCode.PROFILE_IMAGE_NOT_SET);
+            return null;
         }
         String filename = profileImage.getFilename();
         return ImageMapper.toResponseDto("images/" + filename);
@@ -75,13 +75,69 @@ public class ImageService {
     public ImagePostResponseDto updateUserProfileImage(ProfileUploadRequest request) {
         Long userId = request.getUserId();
         Image prevImage = imageRepository.findByTypeAndUserId("profile", userId);
-        prevImage.setUserId(null);
+        if (prevImage != null) {
+            prevImage.setUserId(null);
+        }
+
 
         MultipartFile newFile = request.getFile();
 
         String originalFilename = newFile.getOriginalFilename();
         String filename = LocalDateTime.now() + "_" + originalFilename;
         Image image = new Image(filename, originalFilename, newFile.getSize(), userId,"profile");
+
+        Path imageFilePath = Paths.get(uploadDirectory, filename);
+
+        try {
+            Files.copy(newFile.getInputStream(), imageFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        imageRepository.save(image);
+        return ImageMapper.toResponseDto(image);
+    }
+
+    @Transactional
+    public ImagePostResponseDto uploadPostImage(PostImageUploadRequest request) {
+        MultipartFile file = request.getFile();
+        Long postId = request.getPostId();
+
+        String originalFilename = file.getOriginalFilename();
+        String filename = LocalDateTime.now() + "_" + originalFilename;
+        Image image = new Image(filename, originalFilename, file.getSize(), postId,"post");
+
+        Path imageFilePath = Paths.get(uploadDirectory, filename);
+
+        try {
+            Files.copy(file.getInputStream(), imageFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        imageRepository.save(image);
+        return ImageMapper.toResponseDto(image);
+    }
+
+    public ImageResponseDto getPostImage(Long postId) {
+        Image image = imageRepository.findByTypeAndPostId("post", postId);
+        if (image == null) {
+            return null;
+        }
+        String filename = image.getFilename();
+        return ImageMapper.toResponseDto("images/" + filename);
+    }
+
+    @Transactional
+    public ImagePostResponseDto updatePostImage(PostImageUploadRequest request) {
+        MultipartFile newFile = request.getFile();
+        Long postId = request.getPostId();
+        Image prevImage = imageRepository.findByTypeAndPostId("post", postId);
+        prevImage.setPostId(null);
+
+        String originalFilename = newFile.getOriginalFilename();
+        String filename = LocalDateTime.now() + "_" + originalFilename;
+        Image image = new Image(filename, originalFilename, newFile.getSize(), postId,"post");
 
         Path imageFilePath = Paths.get(uploadDirectory, filename);
 

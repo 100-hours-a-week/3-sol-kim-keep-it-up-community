@@ -1,4 +1,4 @@
-package com.project.community.util;
+package com.project.community.common;
 
 public enum Message {
 
@@ -23,7 +23,12 @@ public enum Message {
     POST_VIEW_COUNT_UPDATED("Post view count updated."),
     PROFILE_IMAGE_POST_SUCCESS("Profile image is uploaded."),
     PROFILE_IMAGE_RETURNED("Profile image is fetched."),
-    PROFILE_IMAGE_UPDATED("Profile image is updated.");
+    PROFILE_IMAGE_UPDATED("Profile image is updated."),
+    PROFILE_IMAGE_NOT_SET("Profile image is not set."),
+    POST_IMAGE_UPLOADED("Post image is uploaded."),
+    POST_IMAGE_NOT_SET("Post image is not set."),
+    POST_IMAGE_RETURNED("Post image is returned."),
+    POST_IMAGE_UPDATED("Post image is updated.");
 
 
     private final String message;

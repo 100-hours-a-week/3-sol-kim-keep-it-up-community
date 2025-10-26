@@ -20,4 +20,8 @@ public class ImageResponse<T> {
     public static <T> ImageResponse<T> from(String message, T data) {
         return new ImageResponse<>(message, data);
     }
+
+    public static <T> ImageResponse<T> from(String message) {
+        return new ImageResponse<>(message);
+    }
 }
