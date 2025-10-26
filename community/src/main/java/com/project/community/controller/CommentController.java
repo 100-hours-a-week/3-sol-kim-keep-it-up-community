@@ -6,7 +6,7 @@ import com.project.community.dto.request.CommentPostRequest;
 import com.project.community.dto.request.CommentUpdateRequest;
 import com.project.community.dto.response.CommentResponse;
 import com.project.community.service.CommentService;
-import com.project.community.util.Message;
+import com.project.community.common.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

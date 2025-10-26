@@ -4,7 +4,7 @@ import com.project.community.dto.PostLikeResponseDto;
 import com.project.community.dto.request.PostLikeRequest;
 import com.project.community.dto.response.PostLikeResponse;
 import com.project.community.service.PostLikeService;
-import com.project.community.util.Message;
+import com.project.community.common.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

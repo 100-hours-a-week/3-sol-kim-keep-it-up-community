@@ -9,7 +9,7 @@ import com.project.community.dto.request.UserSignInRequest;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.dto.response.UserResponse;
 import com.project.community.service.UserService;
-import com.project.community.util.Message;
+import com.project.community.common.Message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

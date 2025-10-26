@@ -5,17 +5,13 @@ import com.project.community.dto.request.PostRequest;
 import com.project.community.dto.request.PostUpdateRequest;
 import com.project.community.dto.response.PostResponse;
 import com.project.community.service.PostService;
-import com.project.community.util.Message;
+import com.project.community.common.Message;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
