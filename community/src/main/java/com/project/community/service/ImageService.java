@@ -1,10 +1,13 @@
 package com.project.community.service;
 
+import com.project.community.common.CustomException;
+import com.project.community.common.ErrorCode;
 import com.project.community.dto.ImagePostResponseDto;
 import com.project.community.dto.ImageResponseDto;
 import com.project.community.dto.request.PostImageUploadRequest;
 import com.project.community.dto.request.ProfileUploadRequest;
 import com.project.community.entity.Image;
+import com.project.community.entity.User;
 import com.project.community.repository.ImageRepository;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.ImageMapper;
@@ -29,10 +32,9 @@ public class ImageService {
 
         Image image = fileService.uploadImage(file, userId, "profile");
 
-        // TODO
-//        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-//        user.setProfileImageUrl("images/" + filename);
-//        userRepository.save(user);
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        user.setProfileImageUrl("images/" + image.getFilename());
+        userRepository.save(user);
 
         imageRepository.save(image);
         return ImageMapper.toResponseDto(image);
@@ -56,8 +58,10 @@ public class ImageService {
         }
 
         MultipartFile newFile = request.getFile();
-
         Image image = fileService.uploadImage(newFile, userId, "profile");
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        user.setProfileImageUrl("images/" + image.getFilename());
 
         imageRepository.save(image);
         return ImageMapper.toResponseDto(image);
@@ -69,6 +73,8 @@ public class ImageService {
         Long postId = request.getPostId();
 
         Image image = fileService.uploadImage(file, postId, "post");
+//        Post post = userRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+//        user.setProfileImageUrl("images/" + image.getFilename());
 
         imageRepository.save(image);
         return ImageMapper.toResponseDto(image);
