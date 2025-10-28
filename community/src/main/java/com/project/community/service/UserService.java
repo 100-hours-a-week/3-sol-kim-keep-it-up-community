@@ -31,12 +31,7 @@ public class UserService {
         String email = userSignUpRequest.getEmail();
 
         if (userRepository.existsByEmail(email)) throw new CustomException(ErrorCode.EMAIL_CONFLICT);
-
-        if (userRepository.existsByNickname(nickname)) {
-            User user = userRepository.findByNickname(nickname);
-            if (!user.isDeleted())
-                throw new CustomException(ErrorCode.NICKNAME_CONFLICT);
-        }
+        if (userRepository.existsByNicknameAndIsDeletedFalse(nickname)) throw new CustomException(ErrorCode.NICKNAME_CONFLICT);
 
         User user = new User(nickname, userSignUpRequest.getEmail(), encryptedPassword);
         userRepository.save(user);
@@ -65,11 +60,11 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (user.isDeleted()) throw new CustomException(ErrorCode.USER_GONE);
         String nickname = userProfileUpdateRequest.getNickname();
-        if (userRepository.existsByNickname(nickname)) {
-            User userNicknameDuplicated = userRepository.findByNickname(nickname);
-            if (!userNicknameDuplicated.isDeleted() && !user.getId().equals(userNicknameDuplicated.getId()))
-                throw new CustomException(ErrorCode.NICKNAME_CONFLICT);
-        }
+
+        User userDuplicated = userRepository.findByNicknameAndIsDeletedFalse(nickname);
+        if (userDuplicated != null && userDuplicated.getId().equals(user.getId()))
+            throw new CustomException(ErrorCode.NICKNAME_CONFLICT);
+
         user.setNickname(nickname);
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
