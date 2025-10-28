@@ -12,7 +12,7 @@ import com.project.community.entity.User;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserResponseDto createUser(UserSignUpRequest userSignUpRequest) {
-        String encryptedPassword = bCryptPasswordEncoder.encode(userSignUpRequest.getPassword());
+        String encryptedPassword = passwordEncoder.encode(userSignUpRequest.getPassword());
         String nickname = userSignUpRequest.getNickname();
         String email = userSignUpRequest.getEmail();
 
@@ -48,7 +48,7 @@ public class UserService {
         User user = userRepository.findByEmail(email);
         if (user == null) throw new CustomException(ErrorCode.WRONG_EMAIL);
         if (user.isDeleted()) throw new CustomException(ErrorCode.USER_GONE);
-        if (!bCryptPasswordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.WRONG_PASSORD);
         }
         return UserMapper.toResponseDto(user);
@@ -80,7 +80,7 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (user.isDeleted()) throw new CustomException(ErrorCode.USER_GONE);
         String password = userPasswordUpdateRequest.getPassword();
-        user.setPassword(bCryptPasswordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         return UserMapper.toResponseDto(user);
     }

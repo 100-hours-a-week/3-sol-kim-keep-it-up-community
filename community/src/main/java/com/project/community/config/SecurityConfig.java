@@ -1,5 +1,6 @@
 package com.project.community.config;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.filter.CorsFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration
+@Configuration // -> proxy is created. maintains correct singleton semantics even for self-calls.
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -18,8 +19,8 @@ public class SecurityConfig {
     private final CorsFilter corsFilter;
 
     @Bean // register the object to be returned to IoC
-    public BCryptPasswordEncoder encode() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // wrapping as passwordEncoder since it might be changed later, the hashing algorithm.
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
