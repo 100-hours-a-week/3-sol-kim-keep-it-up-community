@@ -42,6 +42,8 @@ public class Post {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
+    private String imageUrl;
+
     @OneToMany(mappedBy = "post")
     @JsonIgnore
     @Where(clause = "is_deleted = false")
