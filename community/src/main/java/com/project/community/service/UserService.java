@@ -51,7 +51,7 @@ public class UserService {
         if (user == null) throw new CustomException(ErrorCode.WRONG_EMAIL);
         if (user.isDeleted()) throw new CustomException(ErrorCode.USER_GONE);
         if (!passwordEncoder.matches(userSignInRequest.getPassword(), user.getPassword())) {
-            throw new CustomException(ErrorCode.WRONG_PASSORD);
+            throw new CustomException(ErrorCode.WRONG_PASSWORD);
         }
         HttpSession session = request.getSession(true);
         session.setAttribute("userId", user.getId());
@@ -116,7 +116,7 @@ public class UserService {
         String nickname = userProfileUpdateRequest.getNickname();
 
         User userDuplicated = userRepository.findByNicknameAndIsDeletedFalse(nickname);
-        if (userDuplicated != null && userDuplicated.getId().equals(user.getId()))
+        if (userDuplicated != null && !userDuplicated.getId().equals(user.getId()))
             throw new CustomException(ErrorCode.NICKNAME_CONFLICT);
 
         user.setNickname(nickname);
