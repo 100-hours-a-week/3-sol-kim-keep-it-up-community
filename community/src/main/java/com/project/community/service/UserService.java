@@ -75,7 +75,7 @@ public class UserService {
     public UserProfileResponseDto getUserInfo(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
-        if (session == null) throw new CustomException(ErrorCode.SESSION_EXPIRED);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -108,7 +108,7 @@ public class UserService {
     public UserResponseDto updateProfile(HttpServletRequest request, UserProfileUpdateRequest userProfileUpdateRequest) {
         HttpSession session = request.getSession(false);
 
-        if (session == null) throw new CustomException(ErrorCode.SESSION_EXPIRED);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -144,7 +144,7 @@ public class UserService {
     public UserResponseDto updatePassword(HttpServletRequest request, UserPasswordUpdateRequest userPasswordUpdateRequest) {
         HttpSession session = request.getSession(false);
 
-        if (session == null) throw new CustomException(ErrorCode.SESSION_EXPIRED);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -177,7 +177,7 @@ public class UserService {
     public UserResponseDto withdraw(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
-        if (session == null) throw new CustomException(ErrorCode.SESSION_EXPIRED);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         session.invalidate();
@@ -194,8 +194,11 @@ public class UserService {
      */
     public void signOut(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
+
         if (session != null) {
             session.invalidate();
+        } else {
+            throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         }
     }
 }

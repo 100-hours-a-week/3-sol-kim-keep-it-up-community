@@ -6,6 +6,7 @@ import com.project.community.dto.request.PostUpdateRequest;
 import com.project.community.dto.response.PostResponse;
 import com.project.community.service.PostService;
 import com.project.community.common.Message;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
@@ -21,12 +22,23 @@ public class PostController {
     private final PostService postService;
 
     /*
-    POST, 게시글 작성
+    POST, 게시글 작성 (V1)
+    => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
+     */
+    @PostMapping("/V1")
+    public ResponseEntity<PostResponse> publishPost(@Valid @RequestBody PostRequest postRequest) {
+        PostResponseDto postResponseDto = postService.createPost(postRequest);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(PostResponse.from(Message.POST_PUBLISHED.getMessage(), postResponseDto));
+    }
+
+    /*
+    POST, 게시글 작성 (V2)
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
     @PostMapping
-    public ResponseEntity<PostResponse> publishPost(@Valid @RequestBody PostRequest postRequest) {
-        PostResponseDto postResponseDto = postService.createPost(postRequest);
+    public ResponseEntity<PostResponse> publishPost(HttpServletRequest request, @Valid @RequestBody PostRequest postRequestDto) {
+        PostResponseDto postResponseDto = postService.createPost(request, postRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(PostResponse.from(Message.POST_PUBLISHED.getMessage(), postResponseDto));
     }
@@ -35,9 +47,9 @@ public class PostController {
     GET, 게시글 조회
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> getPostDetail(@PathVariable Long id) {
-        PostResponseDto postResponseDto = postService.getPostDetail(id);
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponse> getPostDetail(@PathVariable Long postId) {
+        PostResponseDto postResponseDto = postService.getPostDetail(postId);
         return ResponseEntity.ok(PostResponse.from(Message.POST_FETCHED.getMessage(), postResponseDto));
     }
 
@@ -53,30 +65,49 @@ public class PostController {
     }
 
     /*
-    PATCH 게시글 수정
+    PATCH 게시글 수정(V1)
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
-    @PatchMapping("/{id}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @Valid @RequestBody PostUpdateRequest postUpdateRequest) {
-        PostResponseDto postResponseDto = postService.updatePost(id, postUpdateRequest);
+    @PatchMapping("/V1/{postId}")
+    public ResponseEntity<PostResponse> updatePost(@PathVariable Long postId, @Valid @RequestBody PostUpdateRequest postUpdateRequest) {
+        PostResponseDto postResponseDto = postService.updatePost(postId, postUpdateRequest);
         return ResponseEntity.ok(PostResponse.from(Message.POST_UPDATE_SUCCESS.getMessage(), postResponseDto));
     }
 
     /*
-    DELETE 게시글 삭제
+    PATCH 게시글 수정(V2)
+    => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<PostResponse> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
+    @PatchMapping("/{postId}")
+    public ResponseEntity<PostResponse> updatePost(HttpServletRequest request, @PathVariable Long postId, @Valid @RequestBody PostUpdateRequest postUpdateRequest) {
+        PostResponseDto postResponseDto = postService.updatePost(request, postId, postUpdateRequest);
+        return ResponseEntity.ok(PostResponse.from(Message.POST_UPDATE_SUCCESS.getMessage(), postResponseDto));
+    }
+
+    /*
+    DELETE 게시글 삭제 (V1)
+     */
+    @DeleteMapping("/V1/{postId}")
+    public ResponseEntity<PostResponse> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.ok(PostResponse.from(Message.POST_DELETE_SUCCESS.getMessage()));
+    }
+
+    /*
+    DELETE 게시글 삭제 (V2)
+     */
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<PostResponse> deletePost(HttpServletRequest request, @PathVariable Long postId) {
+        postService.deletePost(request, postId);
         return ResponseEntity.ok(PostResponse.from(Message.POST_DELETE_SUCCESS.getMessage()));
     }
 
     /*
     PATCH 조회수 증가
      */
-    @PatchMapping("/{id}/viewcount")
-    public ResponseEntity<PostResponse> increaseViewsCount(@PathVariable Long id) {
-        PostResponseDto postResponseDto = postService.increaseViewsCount(id);
+    @PatchMapping("/{postId}/viewcount")
+    public ResponseEntity<PostResponse> increaseViewsCount(@PathVariable Long postId) {
+        PostResponseDto postResponseDto = postService.increaseViewsCount(postId);
         return ResponseEntity.ok(PostResponse.from(Message.POST_VIEW_COUNT_UPDATED.getMessage(), postResponseDto));
     }
 }

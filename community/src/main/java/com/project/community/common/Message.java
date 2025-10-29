@@ -29,7 +29,7 @@ public enum Message {
     POST_IMAGE_NOT_SET("Post image is not set."),
     POST_IMAGE_RETURNED("Post image is returned."),
     POST_IMAGE_UPDATED("Post image is updated."),
-    SIGNOUT_SUCCESS("Signed out. ");
+    SIGNOUT_SUCCESS("Signed out.");
 
 
     private final String message;

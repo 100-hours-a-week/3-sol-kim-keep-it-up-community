@@ -20,7 +20,9 @@ public enum ErrorCode {
     ALREADY_LIKED(HttpStatus.CONFLICT, ErrorMessage.ALREADY_LIKED.getMessage()),
     NO_LIKE_TO_CANCEL(HttpStatus.NOT_FOUND, ErrorMessage.LIKE_NOT_FOUND.getMessage()),
     SIGNIN_NEEDED(HttpStatus.UNAUTHORIZED, ErrorMessage.SIGNIN_NEEDED.getMessage()),
-    SESSION_EXPIRED(HttpStatus.UNAUTHORIZED, ErrorMessage.SIGNIN_AGAIN.getMessage());
+    SESSION_EXPIRED(HttpStatus.UNAUTHORIZED, ErrorMessage.SIGNIN_AGAIN.getMessage()),
+    WRITER_ONLY_EDIT(HttpStatus.FORBIDDEN, ErrorMessage.WRITER_ONLY_EDIT.getMessage()),
+    WRITER_ONLY_DELETE(HttpStatus.FORBIDDEN, ErrorMessage.WRITER_ONLY_DELETE.getMessage());
     private final HttpStatus httpStatus;
     private final String errorMessage;
 
