@@ -21,9 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.project.community.util.PostMapper;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static org.springframework.data.domain.Sort.Order.desc;
 
 @Service
@@ -35,25 +32,15 @@ public class PostService {
     private final PostRepository postRepository;
 
     /*
-    게시글 작성(V1)
-     */
-    @Transactional
-    public PostResponseDto createPost(PostRequest postRequestDto) {
-        User writer = userRepository.findById(postRequestDto.getWriterId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        Post post = PostMapper.toPost(postRequestDto, writer);
-        postRepository.save(post);
-        return PostMapper.toResponseDto(post);
-    }
-
-    /*
     게시글 작성(V2)
      */
     @Transactional
     public PostResponseDto createPost(HttpServletRequest request, PostRequest postRequestDto) {
         HttpSession session = request.getSession(false);
         if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
+        Long userId = (Long) session.getAttribute("userId");
 
-        User writer = userRepository.findById(postRequestDto.getWriterId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User writer = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Post post = PostMapper.toPost(postRequestDto, writer);
         postRepository.save(post);
         return PostMapper.toResponseDto(post);

@@ -22,17 +22,6 @@ public class PostController {
     private final PostService postService;
 
     /*
-    POST, 게시글 작성 v1
-    => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
-     */
-    @PostMapping("/v1")
-    public ResponseEntity<PostResponse> publishPost(@Valid @RequestBody PostRequest postRequest) {
-        PostResponseDto postResponseDto = postService.createPost(postRequest);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(PostResponse.from(Message.POST_PUBLISHED.getMessage(), postResponseDto));
-    }
-
-    /*
     POST, 게시글 작성 v2
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */

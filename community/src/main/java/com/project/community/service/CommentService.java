@@ -30,7 +30,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto createComment(HttpServletRequest request, CommentPostRequest commentPostRequest) {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
         if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
@@ -55,7 +55,7 @@ public class CommentService {
 
     @Transactional
     public CommentResponseDto updateComment(HttpServletRequest request, Long commentId, CommentUpdateRequest commentUpdateRequest) {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
         if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
 
         Long userId = (Long) session.getAttribute("userId");
@@ -72,7 +72,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(HttpServletRequest request, Long commentId) {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
         if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
 
         Long userId = (Long) session.getAttribute("userId");
@@ -85,7 +85,7 @@ public class CommentService {
 
         Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (post.isDeleted()) throw new CustomException(ErrorCode.POST_DELETED);
-        
+
         post.deleteComment(comment);
     }
 }

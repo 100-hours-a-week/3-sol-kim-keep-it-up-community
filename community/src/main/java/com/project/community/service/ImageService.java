@@ -13,6 +13,8 @@ import com.project.community.repository.ImageRepository;
 import com.project.community.repository.PostRepository;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.ImageMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +29,18 @@ public class ImageService {
     private final PostRepository postRepository;
     private final FileService fileService;
 
+    /*
+    프로필 사진 등록
+     */
     @Transactional
-    public ImagePostResponseDto uploadProfileImage(ProfileUploadRequest request) {
+    public ImagePostResponseDto uploadProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
         // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
-        MultipartFile file = request.getFile();
-        Long userId = request.getUserId();
+        HttpSession session = httpServletRequest.getSession(false);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
+
+        Long userId = (Long) session.getAttribute("userId");
+
+        MultipartFile file = requestDto.getFile();
 
         Image image = fileService.uploadImage(file, userId, "profile");
 
@@ -43,7 +52,12 @@ public class ImageService {
         return ImageMapper.toResponseDto(image);
     }
 
-    public ImageResponseDto getUserProfileImage(Long userId) {
+    /*
+    프로필 사진 조회
+     */
+    public ImageResponseDto getUserProfileImage(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("userId");
         Image profileImage = imageRepository.findByTypeAndUserId("profile", userId);
         if (profileImage == null) {
             return null;
@@ -52,15 +66,21 @@ public class ImageService {
         return ImageMapper.toResponseDto("images/" + filename);
     }
 
+    /*
+    프로필 사진 변경
+     */
     @Transactional
-    public ImagePostResponseDto updateUserProfileImage(ProfileUploadRequest request) {
-        Long userId = request.getUserId();
+    public ImagePostResponseDto updateUserProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
+        HttpSession session = httpServletRequest.getSession(false);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
+
+        Long userId = (Long) session.getAttribute("userId");
         Image prevImage = imageRepository.findByTypeAndUserId("profile", userId);
         if (prevImage != null) {
             prevImage.setUserId(null);
         }
 
-        MultipartFile newFile = request.getFile();
+        MultipartFile newFile = requestDto.getFile();
         Image image = fileService.uploadImage(newFile, userId, "profile");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -70,10 +90,16 @@ public class ImageService {
         return ImageMapper.toResponseDto(image);
     }
 
+    /*
+    게시글 사진 등록
+     */
     @Transactional
-    public ImagePostResponseDto uploadPostImage(PostImageUploadRequest request) {
-        MultipartFile file = request.getFile();
-        Long postId = request.getPostId();
+    public ImagePostResponseDto uploadPostImage(HttpServletRequest httpServletRequest, PostImageUploadRequest requestDto) {
+        HttpSession session = httpServletRequest.getSession(false);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
+
+        MultipartFile file = requestDto.getFile();
+        Long postId = requestDto.getPostId();
 
         Image image = fileService.uploadImage(file, postId, "post");
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -84,6 +110,9 @@ public class ImageService {
         return ImageMapper.toResponseDto(image);
     }
 
+    /*
+    게시글 사진 조회
+     */
     public ImageResponseDto getPostImage(Long postId) {
         Image image = imageRepository.findByTypeAndPostId("post", postId);
         if (image == null) {
@@ -93,10 +122,17 @@ public class ImageService {
         return ImageMapper.toResponseDto("images/" + filename);
     }
 
+    /*
+    게시글 사진 변경
+     */
     @Transactional
-    public ImagePostResponseDto updatePostImage(PostImageUploadRequest request) {
-        MultipartFile newFile = request.getFile();
-        Long postId = request.getPostId();
+    public ImagePostResponseDto updatePostImage(HttpServletRequest httpServletRequest, PostImageUploadRequest requestDto) {
+        HttpSession session = httpServletRequest.getSession(false);
+        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
+        Long writerId = (Long) session.getAttribute("userId");
+
+        MultipartFile newFile = requestDto.getFile();
+        Long postId = requestDto.getPostId();
         Image prevImage = imageRepository.findByTypeAndPostId("post", postId);
         prevImage.setPostId(null);
 
@@ -104,6 +140,7 @@ public class ImageService {
         imageRepository.save(newImage);
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        if (!post.getWriter().getId().equals(writerId)) throw new CustomException(ErrorCode.WRITER_ONLY_EDIT);
         post.setImageUrl("images/" + newImage.getFilename());
         postRepository.save(post);
 
