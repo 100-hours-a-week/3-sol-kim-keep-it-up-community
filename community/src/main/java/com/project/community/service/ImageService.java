@@ -111,18 +111,6 @@ public class ImageService {
     }
 
     /*
-    게시글 사진 조회
-     */
-    public ImageResponseDto getPostImage(Long postId) {
-        Image image = imageRepository.findByTypeAndPostId("post", postId);
-        if (image == null) {
-            return null;
-        }
-        String filename = image.getFilename();
-        return ImageMapper.toResponseDto("images/" + filename);
-    }
-
-    /*
     게시글 사진 변경
      */
     @Transactional
@@ -140,7 +128,7 @@ public class ImageService {
         imageRepository.save(newImage);
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        if (!post.getWriter().getId().equals(writerId)) throw new CustomException(ErrorCode.WRITER_ONLY_EDIT);
+        if (!post.getWriter().getId().equals(writerId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_EDIT);
         post.setImageUrl("images/" + newImage.getFilename());
         postRepository.save(post);
 

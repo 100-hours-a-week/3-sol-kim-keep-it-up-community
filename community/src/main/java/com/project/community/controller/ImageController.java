@@ -70,21 +70,6 @@ public class ImageController {
     }
 
     /*
-    GET 게시글 사진 조회
-    => 사진 url
-     */
-    @GetMapping("/posts/{postId}")
-    public ResponseEntity<ImageResponse> getPostImage(@PathVariable Long postId) {
-        ImageResponseDto imageResponseDto = imageService.getPostImage(postId);
-        if (imageResponseDto == null) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                    .body(ImageResponse.from(Message.POST_IMAGE_NOT_SET.getMessage()));
-        }
-
-        return ResponseEntity.ok(ImageResponse.from(Message.POST_IMAGE_RETURNED.getMessage(), imageResponseDto));
-    }
-
-    /*
     PUT 게시글 사진 변경
     => 사진 id
      */

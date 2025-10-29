@@ -94,7 +94,7 @@ public class PostService {
         Long userId = (Long) session.getAttribute("userId");
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        if (!post.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_EDIT);
+        if (!post.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_EDIT);
         if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
         post.setTitle(postUpdateRequest.getTitle());
         post.setContents(postUpdateRequest.getContents());
@@ -125,7 +125,7 @@ public class PostService {
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        if (!post.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_DELETE);
+        if (!post.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_DELETE);
         if (post.isDeleted()) throw new CustomException(ErrorCode.POST_NOT_FOUND);
         post.setDeleted(true);
         postRepository.save(post);

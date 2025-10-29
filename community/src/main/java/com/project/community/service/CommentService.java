@@ -63,7 +63,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         if (comment.isDeleted()) throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
 
-        if (!comment.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_EDIT);
+        if (!comment.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_EDIT);
 
         comment.setContents(commentUpdateRequest.getContents());
         commentRepository.save(comment);
@@ -79,7 +79,7 @@ public class CommentService {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         if (comment.isDeleted()) throw new CustomException(ErrorCode.COMMENT_ALREADY_DELETED);
-        if (!comment.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_DELETE);
+        if (!comment.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_DELETE);
 
         comment.setDeleted(true);
 

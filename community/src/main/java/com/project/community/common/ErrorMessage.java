@@ -17,8 +17,8 @@ public enum ErrorMessage {
     LIKE_NOT_FOUND("No Like to be canceled."),
     SIGNIN_NEEDED("Need to sign in first."),
     SIGNIN_AGAIN("Session has expired. Sign in again."),
-    WRITER_ONLY_EDIT("Only writer can edit it."),
-    WRITER_ONLY_DELETE("Only writer can delete it.");
+    WRITER_ONLY_CAN_EDIT("Only writer can edit it."),
+    WRITER_ONLY_CAN_DELETE("Only writer can delete it.");
 
     private final String message;
 
