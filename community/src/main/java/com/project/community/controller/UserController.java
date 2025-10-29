@@ -39,11 +39,10 @@ public class UserController {
     POST, 로그인
     => id, 닉네임
      */
-    @PostMapping("/signin")
+    @PostMapping("/signIn")
     public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest,
-                                               HttpServletRequest request,
-                                               HttpServletResponse response) {
-        UserResponseDto userResponseDto = userService.signIn(userSignInRequest, request, response);
+                                               HttpServletRequest request) {
+        UserResponseDto userResponseDto = userService.signIn(userSignInRequest, request);
         return ResponseEntity.ok(UserResponse.from(Message.SIGNIN_SUCCESS.getMessage(),userResponseDto));
     }
 
@@ -127,6 +126,9 @@ public class UserController {
         return ResponseEntity.ok(UserResponse.from(Message.WITHDRAWAL_SUCCESS.getMessage(), userResponseDto));
     }
 
+    /*
+    DELETE 로그아웃
+     */
     @DeleteMapping("/signOut")
     public ResponseEntity<UserResponse> signOut(HttpServletRequest request) {
         userService.signOut(request);

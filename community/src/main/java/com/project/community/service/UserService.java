@@ -11,19 +11,12 @@ import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.entity.User;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.UserMapper;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Arrays;
-import java.util.Optional;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -52,7 +45,7 @@ public class UserService {
     /*
     로그인
      */
-    public UserResponseDto signIn(UserSignInRequest userSignInRequest, HttpServletRequest request, HttpServletResponse response) {
+    public UserResponseDto signIn(UserSignInRequest userSignInRequest, HttpServletRequest request) {
         String email = userSignInRequest.getEmail();
         User user = userRepository.findByEmail(email);
         if (user == null) throw new CustomException(ErrorCode.WRONG_EMAIL);
@@ -63,11 +56,6 @@ public class UserService {
         HttpSession session = request.getSession(true);
         session.setAttribute("userId", user.getId());
         session.setMaxInactiveInterval(1800);
-
-//        Cookie cookie = new Cookie("sessionId", session.getId());
-//        System.out.println("USER_LOGGED_IN"+ user.getId());
-//        System.out.println("SESSION_ID"+ session.getId());
-//        response.addCookie(cookie);
 
         return UserMapper.toResponseDto(user);
     }
@@ -85,15 +73,6 @@ public class UserService {
     회원정보 조회(V2)
      */
     public UserProfileResponseDto getUserInfo(HttpServletRequest request) {
-//        Optional<Cookie> sessionIdCookie = Optional.ofNullable(request.getCookies()) // resolving Cannot read the array length because "array" is null
-//                .stream()
-//                .flatMap(Arrays::stream)
-//                .filter(cookie -> cookie.getName().equals("sessionId")) // Stream<Cookie>
-//                .findFirst();
-//
-//        System.out.println("COOKIE" + sessionIdCookie);
-
-//        if (sessionIdCookie.isEmpty()) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         HttpSession session = request.getSession(false);
 
         if (session == null) throw new CustomException(ErrorCode.SESSION_EXPIRED);
