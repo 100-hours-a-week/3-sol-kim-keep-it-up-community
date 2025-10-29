@@ -18,7 +18,9 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, ErrorMessage.COMMENT_NOT_FOUND.getMessage()),
     COMMENT_ALREADY_DELETED(HttpStatus.GONE, ErrorMessage.COMMENT_ALREADY_GONE.getMessage()),
     ALREADY_LIKED(HttpStatus.CONFLICT, ErrorMessage.ALREADY_LIKED.getMessage()),
-    NO_LIKE_TO_CANCEL(HttpStatus.NOT_FOUND, ErrorMessage.LIKE_NOT_FOUND.getMessage());
+    NO_LIKE_TO_CANCEL(HttpStatus.NOT_FOUND, ErrorMessage.LIKE_NOT_FOUND.getMessage()),
+    SIGNIN_NEEDED(HttpStatus.UNAUTHORIZED, ErrorMessage.SIGNIN_NEEDED.getMessage()),
+    SESSION_EXPIRED(HttpStatus.UNAUTHORIZED, ErrorMessage.SIGNIN_AGAIN.getMessage());
     private final HttpStatus httpStatus;
     private final String errorMessage;
 

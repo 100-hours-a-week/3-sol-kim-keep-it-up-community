@@ -10,6 +10,8 @@ import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.dto.response.UserResponse;
 import com.project.community.service.UserService;
 import com.project.community.common.Message;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +40,15 @@ public class UserController {
     => id, 닉네임
      */
     @PostMapping("/signin")
-    public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest) {
-        UserResponseDto userResponseDto = userService.signIn(userSignInRequest);
+    public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest,
+                                               HttpServletRequest request,
+                                               HttpServletResponse response) {
+        UserResponseDto userResponseDto = userService.signIn(userSignInRequest, request, response);
         return ResponseEntity.ok(UserResponse.from(Message.SIGNIN_SUCCESS.getMessage(),userResponseDto));
     }
 
     /*
-    GET, 프로필 정보 조회
+    GET, 프로필 정보 조회(V1)
     => 닉네임, 이메일
      */
     @GetMapping("/{id}")
@@ -54,7 +58,17 @@ public class UserController {
     }
 
     /*
-    PATCH, 프로필 정보 수정
+    GET, 프로필 정보 조회(V2)
+    => 닉네임, 이메일
+     */
+    @GetMapping
+    public ResponseEntity<UserResponse> getUserInfo(HttpServletRequest request) {
+        UserProfileResponseDto userProfileResponseDto = userService.getUserInfo(request);
+        return ResponseEntity.ok(UserResponse.from(Message.USER_INFO_FETCHED.getMessage(), userProfileResponseDto));
+    }
+
+    /*
+    PATCH, 프로필 정보 수정(V1)
     => id, 닉네임
      */
     @PatchMapping("/{id}")
@@ -64,7 +78,17 @@ public class UserController {
     }
 
     /*
-    PATCH, 비밀번호 변경
+    PATCH, 프로필 정보 수정(V2)
+    => id, 닉네임
+     */
+    @PatchMapping
+    public ResponseEntity<UserResponse> updateUserInfo(HttpServletRequest request, @RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
+        UserResponseDto userResponseDto = userService.updateProfile(request, userProfileUpdateRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.PROFILE_UPDATE_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    /*
+    PATCH, 비밀번호 변경(V1)
     => id, 닉네임
      */
     @PatchMapping("/{id}/password")
@@ -74,12 +98,38 @@ public class UserController {
     }
 
     /*
-    DELETE, 회원탈퇴
+    PATCH, 비밀번호 변경(V2)
+    => id, 닉네임
+     */
+    @PatchMapping("/password")
+    public ResponseEntity<UserResponse> updatePassword(HttpServletRequest request, @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
+        UserResponseDto userResponseDto = userService.updatePassword(request, userPasswordUpdateRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.PASSWORD_UPDATE_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    /*
+    DELETE, 회원탈퇴(V1)
     => id, 닉네임
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<UserResponse> withdraw(@PathVariable Long id) {
         UserResponseDto userResponseDto = userService.withdraw(id);
         return ResponseEntity.ok(UserResponse.from(Message.WITHDRAWAL_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    /*
+   DELETE, 회원탈퇴(V2)
+   => id, 닉네임
+    */
+    @DeleteMapping
+    public ResponseEntity<UserResponse> withdraw(HttpServletRequest request) {
+        UserResponseDto userResponseDto = userService.withdraw(request);
+        return ResponseEntity.ok(UserResponse.from(Message.WITHDRAWAL_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    @DeleteMapping("/signOut")
+    public ResponseEntity<UserResponse> signOut(HttpServletRequest request) {
+        userService.signOut(request);
+        return ResponseEntity.ok(UserResponse.from(Message.SIGNOUT_SUCCESS.getMessage()));
     }
 }
