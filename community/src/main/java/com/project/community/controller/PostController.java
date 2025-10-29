@@ -22,10 +22,10 @@ public class PostController {
     private final PostService postService;
 
     /*
-    POST, 게시글 작성 (V1)
+    POST, 게시글 작성 v1
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
-    @PostMapping("/V1")
+    @PostMapping("/v1")
     public ResponseEntity<PostResponse> publishPost(@Valid @RequestBody PostRequest postRequest) {
         PostResponseDto postResponseDto = postService.createPost(postRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -33,7 +33,7 @@ public class PostController {
     }
 
     /*
-    POST, 게시글 작성 (V2)
+    POST, 게시글 작성 v2
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
     @PostMapping
@@ -65,17 +65,17 @@ public class PostController {
     }
 
     /*
-    PATCH 게시글 수정(V1)
+    PATCH 게시글 수정 v1
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
-    @PatchMapping("/V1/{postId}")
+    @PatchMapping("/v1/{postId}")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long postId, @Valid @RequestBody PostUpdateRequest postUpdateRequest) {
         PostResponseDto postResponseDto = postService.updatePost(postId, postUpdateRequest);
         return ResponseEntity.ok(PostResponse.from(Message.POST_UPDATE_SUCCESS.getMessage(), postResponseDto));
     }
 
     /*
-    PATCH 게시글 수정(V2)
+    PATCH 게시글 수정 v2
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
     @PatchMapping("/{postId}")
@@ -85,16 +85,16 @@ public class PostController {
     }
 
     /*
-    DELETE 게시글 삭제 (V1)
+    DELETE 게시글 삭제 v1
      */
-    @DeleteMapping("/V1/{postId}")
+    @DeleteMapping("/v1/{postId}")
     public ResponseEntity<PostResponse> deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
         return ResponseEntity.ok(PostResponse.from(Message.POST_DELETE_SUCCESS.getMessage()));
     }
 
     /*
-    DELETE 게시글 삭제 (V2)
+    DELETE 게시글 삭제 v2
      */
     @DeleteMapping("/{postId}")
     public ResponseEntity<PostResponse> deletePost(HttpServletRequest request, @PathVariable Long postId) {

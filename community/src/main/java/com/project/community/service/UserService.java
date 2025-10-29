@@ -61,7 +61,7 @@ public class UserService {
     }
 
     /*
-    회원정보 조회(V1)
+    회원정보 조회 v1
      */
     public UserProfileResponseDto getUserInfo(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -70,7 +70,7 @@ public class UserService {
     }
 
     /*
-    회원정보 조회(V2)
+    회원정보 조회 v2
      */
     public UserProfileResponseDto getUserInfo(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
@@ -84,7 +84,7 @@ public class UserService {
     }
 
     /*
-    회원정보 수정(V1)
+    회원정보 수정 v1
      */
     @Transactional
     public UserResponseDto updateProfile(Long id, UserProfileUpdateRequest userProfileUpdateRequest) {
@@ -102,7 +102,7 @@ public class UserService {
     }
 
     /*
-    회원정보 수정(V2)
+    회원정보 수정 v2
      */
     @Transactional
     public UserResponseDto updateProfile(HttpServletRequest request, UserProfileUpdateRequest userProfileUpdateRequest) {
@@ -125,7 +125,7 @@ public class UserService {
     }
 
     /*
-    비밀번호 변경(V1)
+    비밀번호 변경 v1
      */
     @Transactional
     public UserResponseDto updatePassword(Long id, UserPasswordUpdateRequest userPasswordUpdateRequest) {
@@ -138,7 +138,7 @@ public class UserService {
     }
 
     /*
-    비밀번호 변경(V2)
+    비밀번호 변경 v2
      */
     @Transactional
     public UserResponseDto updatePassword(HttpServletRequest request, UserPasswordUpdateRequest userPasswordUpdateRequest) {
@@ -159,7 +159,7 @@ public class UserService {
     }
 
     /*
-    회원탈퇴(V1)
+    회원탈퇴 v1
      */
     @Transactional
     public UserResponseDto withdraw(Long id) {
@@ -171,7 +171,7 @@ public class UserService {
     }
 
     /*
-    회원탈퇴(V2)
+    회원탈퇴 v2
      */
     @Transactional
     public UserResponseDto withdraw(HttpServletRequest request) {
