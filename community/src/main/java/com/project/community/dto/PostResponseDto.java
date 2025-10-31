@@ -12,6 +12,7 @@ public class PostResponseDto {
     private final String title;
     private final String contents;
     private final UserResponseDto writer;
+    private final String imageUrl;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime createdAt;
     private final int viewsCount;

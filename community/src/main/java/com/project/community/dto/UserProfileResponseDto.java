@@ -8,5 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class UserProfileResponseDto {
     private final String nickname;
     private final String email;
-    // private String profileImageUrl;
+    private final String profileImageUrl;
 }

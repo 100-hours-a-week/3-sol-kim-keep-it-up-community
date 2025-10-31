@@ -1,4 +1,4 @@
-package com.project.community.util;
+package com.project.community.common;
 
 public enum ErrorMessage {
 

@@ -4,6 +4,10 @@ spring:
     username: root
     password: wlalsdlqslek!
     driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
 
   jpa:
     hibernate:
@@ -19,3 +23,8 @@ server:
 logging:
   level:
     org.hibernate.SQL: debug
+
+file:
+  path: /Users/kimjimin/Developer/2025/3-sol-kim-keep-it-up-community/images/
+#  classpath:/static/: 읽기 전용이라, 해당 위치로의 파일 작성은 불가.
+#./static: src/main, test와 같은 레벨에 만들어 진다.

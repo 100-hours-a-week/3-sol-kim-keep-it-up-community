@@ -1,6 +1,5 @@
 package com.project.community.common;
 
-import com.project.community.util.ErrorMessage;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

@@ -15,6 +15,7 @@ public class PostMapper {
                 post.getTitle(),
                 post.getContents(),
                 UserMapper.toResponseDto(post.getWriter()),
+                post.getImageUrl(),
                 post.getCreatedAt(),
                 post.getViewsCount(),
                 post.getCommentsCount(),
