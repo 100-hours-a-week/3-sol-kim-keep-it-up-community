@@ -13,7 +13,16 @@ public class UserResponse<T> {
         this.message = message;
         this.data = data;
     }
+
+    public UserResponse(String message) {
+        this.message = message;
+        this.data = null;
+    }
     public static <T> UserResponse<T> from(String message, T data) {
         return new UserResponse<>(message, data);
+    }
+
+    public static <T> UserResponse<T> from(String message) {
+        return new UserResponse<>(message);
     }
 }

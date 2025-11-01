@@ -8,10 +8,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class CommentPostRequest {
-
-    @NotNull
-    private final Long writerId;
-
     @NotNull
     @NotBlank
     private final String contents;

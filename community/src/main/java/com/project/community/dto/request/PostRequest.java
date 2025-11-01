@@ -15,7 +15,4 @@ public class PostRequest {
     @NotNull
     @NotBlank
     private final String contents;
-
-    @NotNull
-    private final Long writerId;
 }
