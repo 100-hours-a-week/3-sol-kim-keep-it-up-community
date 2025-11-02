@@ -1,6 +1,8 @@
 package com.project.community.controller;
 
 
+import com.project.community.common.CustomException;
+import com.project.community.common.ErrorCode;
 import com.project.community.dto.UserProfileResponseDto;
 import com.project.community.dto.UserResponseDto;
 import com.project.community.dto.request.UserPasswordUpdateRequest;
@@ -140,28 +142,18 @@ public class UserController {
 
     @PostMapping("/refresh")
     @ResponseBody
-    public Map<String, String> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+    public ResponseEntity<UserResponse> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken,
                                        HttpServletResponse response) {
         if (refreshToken == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return Map.of("error", "Refresh token missing");
+            throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         }
 
         try {
-            var tokenRes = userService.refreshTokens(refreshToken, response);
-
-            if (tokenRes == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return Map.of("error", "Refresh token invalid or expired");
-            }
-
-            return Map.of(
-                    "accessToken", tokenRes.accessToken(),
-                    "refreshToken", tokenRes.refreshToken()
-            );
+            userService.refreshTokens(refreshToken, response);
+            return ResponseEntity.ok(UserResponse.from(Message.TOKEN_REFRESHED.getMessage()));
         } catch (ResponseStatusException exception) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return Map.of("error", "Refresh token invalid or expired");
+            throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         }
     }
 }
