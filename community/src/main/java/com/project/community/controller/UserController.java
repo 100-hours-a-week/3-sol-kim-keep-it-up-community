@@ -11,10 +11,14 @@ import com.project.community.dto.response.UserResponse;
 import com.project.community.service.UserService;
 import com.project.community.common.Message;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -40,8 +44,8 @@ public class UserController {
      */
     @PostMapping("/signIn")
     public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest,
-                                               HttpServletRequest request) {
-        UserResponseDto userResponseDto = userService.signIn(userSignInRequest, request);
+                                               HttpServletResponse response) {
+        UserResponseDto userResponseDto = userService.signIn(userSignInRequest, response);
         return ResponseEntity.ok(UserResponse.from(Message.SIGNIN_SUCCESS.getMessage(),userResponseDto));
     }
 
@@ -116,12 +120,12 @@ public class UserController {
     }
 
     /*
-   DELETE, 회원탈퇴 v2
+   DELETE, 회원탈퇴 v3
    => id, 닉네임
     */
     @DeleteMapping
-    public ResponseEntity<UserResponse> withdraw(HttpServletRequest request) {
-        UserResponseDto userResponseDto = userService.withdraw(request);
+    public ResponseEntity<UserResponse> withdraw(HttpServletRequest request, HttpServletResponse response) {
+        UserResponseDto userResponseDto = userService.withdraw(request, response);
         return ResponseEntity.ok(UserResponse.from(Message.WITHDRAWAL_SUCCESS.getMessage(), userResponseDto));
     }
 
@@ -129,8 +133,35 @@ public class UserController {
     DELETE 로그아웃
      */
     @DeleteMapping("/signOut")
-    public ResponseEntity<UserResponse> signOut(HttpServletRequest request) {
-        userService.signOut(request);
+    public ResponseEntity<UserResponse> signOut(HttpServletResponse response) {
+        userService.signOut(response);
         return ResponseEntity.ok(UserResponse.from(Message.SIGNOUT_SUCCESS.getMessage()));
+    }
+
+    @PostMapping("/refresh")
+    @ResponseBody
+    public Map<String, String> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+                                       HttpServletResponse response) {
+        if (refreshToken == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return Map.of("error", "Refresh token missing");
+        }
+
+        try {
+            var tokenRes = userService.refreshTokens(refreshToken, response);
+
+            if (tokenRes == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return Map.of("error", "Refresh token invalid or expired");
+            }
+
+            return Map.of(
+                    "accessToken", tokenRes.accessToken(),
+                    "refreshToken", tokenRes.refreshToken()
+            );
+        } catch (ResponseStatusException exception) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return Map.of("error", "Refresh token invalid or expired");
+        }
     }
 }

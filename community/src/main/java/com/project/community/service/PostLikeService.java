@@ -11,7 +11,6 @@ import com.project.community.repository.PostLikeRepository;
 import com.project.community.repository.UserRepository;
 import com.project.community.repository.PostRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,12 +42,11 @@ public class PostLikeService {
     }
 
     /*
-    게시글 좋아요 등록 v2
+    게시글 좋아요 등록 v3
      */
     @Transactional
     public void registerPostLike(HttpServletRequest request, Long postId) {
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (user.isDeleted()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -78,11 +76,10 @@ public class PostLikeService {
     }
 
     /*
-    게시글 좋아요 여부 조회 v2
+    게시글 좋아요 여부 조회 v3
      */
     public PostLikeResponseDto getIsPostLiked(Long postId, HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         PostLikeResponseDto postLikeResponseDto = new PostLikeResponseDto();
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -113,12 +110,11 @@ public class PostLikeService {
     }
 
     /*
-    게시글 좋아요 취소 v2
+    게시글 좋아요 취소 v3
      */
     @Transactional
     public void cancelPostLike(HttpServletRequest request, Long postId) {
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (user.isDeleted()) throw new CustomException(ErrorCode.USER_NOT_FOUND);
