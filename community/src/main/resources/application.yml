@@ -24,7 +24,7 @@ server:
     session:
       cookie:
         http-only: true # preventing XSS
-        secure: true # for HTTPS
+#        secure: true # for HTTPS
 
 logging:
   level:
