@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private static final int ACCESS_TOKEN_EXPIRATION = 15 * 60; // 15분
+    private static final int ACCESS_TOKEN_EXPIRATION = 1 * 60; // 15분
     private static final int REFRESH_TOKEN_EXPIRATION = 14 * 24 * 3600; // 14일
 
     private final RefreshTokenRepository refreshTokenRepository;
