@@ -48,8 +48,6 @@ public class PostLikeService {
     @Transactional
     public void registerPostLike(HttpServletRequest request, Long postId) {
         HttpSession session = request.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
-
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -84,8 +82,6 @@ public class PostLikeService {
      */
     public PostLikeResponseDto getIsPostLiked(Long postId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
-
         Long userId = (Long) session.getAttribute("userId");
 
         PostLikeResponseDto postLikeResponseDto = new PostLikeResponseDto();
@@ -122,8 +118,6 @@ public class PostLikeService {
     @Transactional
     public void cancelPostLike(HttpServletRequest request, Long postId) {
         HttpSession session = request.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
-
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));

@@ -36,12 +36,9 @@ public class ImageService {
     public ImagePostResponseDto uploadProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
         // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
         HttpSession session = httpServletRequest.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
-
         Long userId = (Long) session.getAttribute("userId");
 
         MultipartFile file = requestDto.getFile();
-
         Image image = fileService.uploadImage(file, userId, "profile");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -72,7 +69,6 @@ public class ImageService {
     @Transactional
     public ImagePostResponseDto updateUserProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
         HttpSession session = httpServletRequest.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
 
         Long userId = (Long) session.getAttribute("userId");
         Image prevImage = imageRepository.findByTypeAndUserId("profile", userId);
@@ -94,10 +90,7 @@ public class ImageService {
     게시글 사진 등록
      */
     @Transactional
-    public ImagePostResponseDto uploadPostImage(HttpServletRequest httpServletRequest, PostImageUploadRequest requestDto) {
-        HttpSession session = httpServletRequest.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
-
+    public ImagePostResponseDto uploadPostImage(PostImageUploadRequest requestDto) {
         MultipartFile file = requestDto.getFile();
         Long postId = requestDto.getPostId();
 
@@ -116,7 +109,6 @@ public class ImageService {
     @Transactional
     public ImagePostResponseDto updatePostImage(HttpServletRequest httpServletRequest, PostImageUploadRequest requestDto) {
         HttpSession session = httpServletRequest.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long writerId = (Long) session.getAttribute("userId");
 
         MultipartFile newFile = requestDto.getFile();

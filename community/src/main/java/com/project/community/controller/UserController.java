@@ -27,7 +27,7 @@ public class UserController {
     POST, 회원가입
     => id, 닉네임
      */
-    @PostMapping
+    @PostMapping("/signUp")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserSignUpRequest userSignUpRequest) {
         UserResponseDto userResponseDto = userService.createUser(userSignUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED)

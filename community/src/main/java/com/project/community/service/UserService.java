@@ -74,8 +74,6 @@ public class UserService {
      */
     public UserProfileResponseDto getUserInfo(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -107,8 +105,6 @@ public class UserService {
     @Transactional
     public UserResponseDto updateProfile(HttpServletRequest request, UserProfileUpdateRequest userProfileUpdateRequest) {
         HttpSession session = request.getSession(false);
-
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -143,8 +139,6 @@ public class UserService {
     @Transactional
     public UserResponseDto updatePassword(HttpServletRequest request, UserPasswordUpdateRequest userPasswordUpdateRequest) {
         HttpSession session = request.getSession(false);
-
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -176,8 +170,6 @@ public class UserService {
     @Transactional
     public UserResponseDto withdraw(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         session.invalidate();

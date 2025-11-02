@@ -37,7 +37,7 @@ public class CommentController {
     GET 댓글 목록 조회
     => 댓글 List(id, 작성자, 게시글 id, 내용, 작성일자)
      */
-    @GetMapping()
+    @GetMapping("/list")
     public ResponseEntity<CommentResponse> getPostComments(@PathVariable Long postId) {
         List<CommentResponseDto> commentResponseDtoList = commentService.getPostComments(postId);
         return ResponseEntity.ok(CommentResponse.from(Message.POST_COMMENT_FETCHED.getMessage(), commentResponseDtoList));

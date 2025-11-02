@@ -37,7 +37,6 @@ public class PostService {
     @Transactional
     public PostResponseDto createPost(HttpServletRequest request, PostRequest postRequestDto) {
         HttpSession session = request.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         Long userId = (Long) session.getAttribute("userId");
 
         User writer = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
@@ -71,7 +70,7 @@ public class PostService {
     }
 
     /*
-    게시글 수정(V1)
+    게시글 수정 v1
      */
     @Transactional
     public PostResponseDto updatePost(Long id, PostUpdateRequest postUpdateRequest) {
@@ -84,13 +83,11 @@ public class PostService {
     }
 
     /*
-    게시글 수정(V2)
+    게시글 수정 v2
      */
     @Transactional
     public PostResponseDto updatePost(HttpServletRequest request, Long postId, PostUpdateRequest postUpdateRequest) {
         HttpSession session = request.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
-
         Long userId = (Long) session.getAttribute("userId");
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
@@ -103,7 +100,7 @@ public class PostService {
     }
 
     /*
-    게시글 삭제(V1)
+    게시글 삭제 v1
      */
     @Transactional
     public void deletePost(Long postId) {
@@ -114,13 +111,11 @@ public class PostService {
     }
 
     /*
-    게시글 삭제(V2)
+    게시글 삭제 v2
      */
     @Transactional
     public void deletePost(HttpServletRequest request, Long postId) {
         HttpSession session = request.getSession(false);
-        if (session == null) throw new CustomException(ErrorCode.SIGNIN_NEEDED);
-
         Long userId = (Long) session.getAttribute("userId");
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));

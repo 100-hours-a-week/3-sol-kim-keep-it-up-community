@@ -36,7 +36,7 @@ public class PostController {
     GET, 게시글 조회
     => id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수
      */
-    @GetMapping("/{postId}")
+    @GetMapping("/detail/{postId}")
     public ResponseEntity<PostResponse> getPostDetail(@PathVariable Long postId) {
         PostResponseDto postResponseDto = postService.getPostDetail(postId);
         return ResponseEntity.ok(PostResponse.from(Message.POST_FETCHED.getMessage(), postResponseDto));
@@ -46,7 +46,7 @@ public class PostController {
     GET 게시글 목록 조회
     => 게시물 List(id, 제목, 내용, 작성자, 작성일자, 조회수, 댓글 수, 좋아요 수)
      */
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<PostResponse> getPostList(@RequestParam(required = false) Long cursorId,
                                                     @RequestParam(defaultValue = "20") int size) {
         Slice<PostResponseDto> postResponseDtoList = postService.getPostList(cursorId, size);
