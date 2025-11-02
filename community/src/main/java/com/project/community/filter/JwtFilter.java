@@ -1,6 +1,5 @@
 package com.project.community.filter;
 
-import com.project.community.common.CustomException;
 import com.project.community.common.ErrorCode;
 import com.project.community.util.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -27,7 +26,8 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     private static final String[] EXCLUDED_PATHS = {
-            "/**/signUp", "/**/signIn", "/**/list", "/**/detail/*", "/**/viewcount", "/legal/**"
+            "/**/signUp", "/**/signIn", "/**/list", "/**/detail/*", "/**/viewcount", "/legal/**",
+            "/images/**", "/**/refresh"
     };
 
     private final PathMatcher pathMatcher = new AntPathMatcher();
@@ -38,21 +38,27 @@ public class JwtFilter extends OncePerRequestFilter {
         return Arrays.stream(EXCLUDED_PATHS).anyMatch(pattern -> pathMatcher.match(pattern, path));
     }
 
+    @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain chain
     ) throws IOException, ServletException {
+
         Optional<String> token = extractToken(request);
         if (token.isEmpty() || token.get().isBlank()) {
-            throw new CustomException(ErrorCode.SIGNIN_NEEDED);
+            writeError(response, ErrorCode.SIGNIN_NEEDED);
+            return;
         }
 
         if (!validateAndSetAttributes(token.get(), request)) {
-            throw new CustomException(ErrorCode.INVALID_TOKEN);
+            System.out.println("!validateAndSetAttributes(token.get(), request)");
+            writeError(response, ErrorCode.INVALID_TOKEN);
+            return;
         }
 
         chain.doFilter(request, response);
+
     }
 
     private Optional<String> extractToken(HttpServletRequest request) {
@@ -80,9 +86,19 @@ public class JwtFilter extends OncePerRequestFilter {
             var jws = jwtUtil.parse(token);
             Claims body = jws.getBody();
             request.setAttribute("userId", Long.valueOf(body.getSubject()));
+            System.out.println("VALIDATE AND SET ATTRIBUTES" + Long.valueOf(body.getSubject()));
             return true;
         } catch (Exception exception) {
             return false;
         }
+    }
+
+    private void writeError(HttpServletResponse response, ErrorCode code) throws IOException {
+        response.setStatus(code.getHttpStatus().value());
+        response.setContentType("application/json;charset=UTF-8");
+        String body = """
+      { "code": "%s", "message": "%s" }
+      """.formatted(code.name(), code.getErrorMessage());
+        response.getWriter().write(body);
     }
 }
