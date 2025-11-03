@@ -24,8 +24,7 @@ public enum ErrorCode {
     WRITER_ONLY_CAN_EDIT(HttpStatus.FORBIDDEN, ErrorMessage.WRITER_ONLY_CAN_EDIT.getMessage()),
     WRITER_ONLY_CAN_DELETE(HttpStatus.FORBIDDEN, ErrorMessage.WRITER_ONLY_CAN_DELETE.getMessage()),
     PROFILE_IMAGE_ALREADY_SET(HttpStatus.CONFLICT, ErrorMessage.PROFILE_IMAGE_ALREADY_SET.getMessage()),
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.getMessage()),
-    TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "token missing");
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, ErrorMessage.INVALID_TOKEN.getMessage());
     private final HttpStatus httpStatus;
     private final String errorMessage;
 
@@ -33,5 +32,4 @@ public enum ErrorCode {
         this.httpStatus = httpStatus;
         this.errorMessage = errorMessage;
     }
-
 }
