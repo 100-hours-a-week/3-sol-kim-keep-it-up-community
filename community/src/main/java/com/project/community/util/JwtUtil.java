@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    private static final int ACCESS_TOKEN_EXPIRATION = 1 * 60; // 15분
+    private static final int ACCESS_TOKEN_EXPIRATION = 15 * 60; // 15분
     private static final int REFRESH_TOKEN_EXPIRATION = 14 * 24 * 3600; // 14일
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -33,7 +33,9 @@ public class JwtUtil {
             Base64.getDecoder().decode("MjAyNeuFhDEx7JuUMuydvGp3dOq0gOugqOyGjOyKpOy9lOuTnOyekeyEsQ==")
     );
 
-
+    /*
+    토큰 생성
+     */
     public TokenResponseDto generateAndSaveTokens(User user) {
         String accessToken = generateAccessToken(user.getId(), user.getEmail());
         String refreshToken = generateRefreshToken(user.getId());
@@ -71,14 +73,21 @@ public class JwtUtil {
                 .compact();
     }
 
+    /*
+    파싱 및 유효성 검증
+     */
     public Jws<Claims> parse(String jwt) {
+        //JWS: Json Web Signature. JWT에 서명이 포함된 형태
         return Jwts
                 .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(jwt);
+                .setSigningKey(key) // 서명 키를 사용해서
+                .build() // 파서를 생성하고
+                .parseClaimsJws(jwt); // 토큰의 서명과 만료 시간 확인
     }
 
+    /*
+    쿠키에 토큰 추가
+     */
     public void addTokenCookies(HttpServletResponse response, TokenResponseDto tokenResponse, Integer maxAge) {
         addTokenCookie(response, "accessToken", tokenResponse.accessToken(), (maxAge != null) ? maxAge : ACCESS_TOKEN_EXPIRATION);
         addTokenCookie(response, "refreshToken", tokenResponse.refreshToken(), (maxAge != null) ? maxAge : REFRESH_TOKEN_EXPIRATION);

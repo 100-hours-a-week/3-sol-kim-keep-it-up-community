@@ -1,6 +1,7 @@
 package com.project.community.filter;
 
 import com.project.community.common.ErrorCode;
+import com.project.community.util.ErrorResponseWriter;
 import com.project.community.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -24,10 +25,11 @@ import java.util.Optional;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final ErrorResponseWriter errorWriter;
 
     private static final String[] EXCLUDED_PATHS = {
-            "/**/signUp", "/**/signIn", "/**/list", "/**/detail/*", "/**/viewcount", "/legal/**",
-            "/images/**", "/**/refresh"
+            "/**/signUp", "/**/signIn", "/**/list", "/**/detail/*", "/**/viewcount", "/**/refresh",
+            "/images/**", "/legal/**"
     };
 
     private final PathMatcher pathMatcher = new AntPathMatcher();
@@ -47,20 +49,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
         Optional<String> token = extractToken(request);
         if (token.isEmpty() || token.get().isBlank()) {
-            writeError(response, ErrorCode.SIGNIN_NEEDED);
+            errorWriter.writeError(response, ErrorCode.SIGNIN_NEEDED);
             return;
         }
 
         if (!validateAndSetAttributes(token.get(), request)) {
-            System.out.println("!validateAndSetAttributes(token.get(), request)");
-            writeError(response, ErrorCode.INVALID_TOKEN);
+            errorWriter.writeError(response, ErrorCode.INVALID_TOKEN);
             return;
         }
 
         chain.doFilter(request, response);
-
     }
 
+    /*
+    토큰 추출
+     */
     private Optional<String> extractToken(HttpServletRequest request) {
         return extractTokenFromHeader(request)
                 .or(() -> extractTokenFromCookie(request));
@@ -81,24 +84,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 .findFirst();
     }
 
+    /*
+    토큰 유효성 검증 및 속성 값 할당
+     */
     private boolean validateAndSetAttributes(String token, HttpServletRequest request) {
         try {
             var jws = jwtUtil.parse(token);
             Claims body = jws.getBody();
             request.setAttribute("userId", Long.valueOf(body.getSubject()));
-            System.out.println("VALIDATE AND SET ATTRIBUTES" + Long.valueOf(body.getSubject()));
             return true;
         } catch (Exception exception) {
             return false;
         }
-    }
-
-    private void writeError(HttpServletResponse response, ErrorCode code) throws IOException {
-        response.setStatus(code.getHttpStatus().value());
-        response.setContentType("application/json;charset=UTF-8");
-        String body = """
-      { "code": "%s", "message": "%s" }
-      """.formatted(code.name(), code.getErrorMessage());
-        response.getWriter().write(body);
     }
 }

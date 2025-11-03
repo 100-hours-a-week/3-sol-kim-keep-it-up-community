@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -145,7 +144,6 @@ public class UserController {
     public ResponseEntity<UserResponse> refresh(@CookieValue(value = "refreshToken", required = false) String refreshToken,
                                        HttpServletResponse response) {
         if (refreshToken == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             throw new CustomException(ErrorCode.SIGNIN_NEEDED);
         }
 

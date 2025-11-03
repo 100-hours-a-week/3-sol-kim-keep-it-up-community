@@ -16,11 +16,4 @@ public class WebConfig implements WebMvcConfigurer {
                 .addResourceLocations("file:" + uploadDir)
                 .setCachePeriod(3600);
     }
-
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new SessionInterceptor())
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/**/signUp", "/**/signIn", "/**/list", "/**/detail/*", "/**/viewcount", "/legal/**");
-//    }
 }
