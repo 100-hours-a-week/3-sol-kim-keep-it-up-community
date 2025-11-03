@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -60,30 +58,13 @@ public class ImageService {
     public ImageResponseDto getUserProfileImage(HttpServletRequest request) {
         Long userId = (Long) request.getAttribute("userId");
 
-        System.out.println("IN GET USER PROFILE IMAGE" + userId);
-//        List<Image> images = imageRepository.findAllByTypeAndUserId("profile", userId);
-//        // 로그로 어떤 행들이 있는지 확인
-//        System.out.println("IN GET USER PROFILE IMAGE2");
-//        images.forEach(img -> {
-//            System.out.printf("[PROFILE DUP CHECK] id=%d, filename=%s, userId=%d, postId=%s, type=%s%n",
-//                    img.getId(),
-//                    img.getFilename(),
-//                    img.getUserId(),
-//                    String.valueOf(img.getPostId()),
-//                    img.getType());
-//        });
-
-
         Image profileImage = imageRepository.findByTypeAndUserId("profile", userId);
-        // 로그로 어떤 행들이 있는지 확인
-        System.out.println("IN GET USER PROFILE IMAGE2");
 
         if (profileImage == null) {
             return null;
         }
         String filename = profileImage.getFilename();
         return ImageMapper.toResponseDto("images/" + filename);
-//        return ImageMapper.toResponseDto("images/");
     }
 
     /*
@@ -135,7 +116,9 @@ public class ImageService {
         MultipartFile newFile = requestDto.getFile();
         Long postId = requestDto.getPostId();
         Image prevImage = imageRepository.findByTypeAndPostId("post", postId);
-        prevImage.setPostId(null);
+        if (prevImage != null) {
+            prevImage.setPostId(null);
+        }
 
         Image newImage = fileService.uploadImage(newFile, postId, "post");
         imageRepository.save(newImage);
