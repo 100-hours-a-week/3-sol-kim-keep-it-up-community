@@ -31,12 +31,12 @@ public class CommentService {
     댓글 등록
      */
     @Transactional
-    public CommentResponseDto createComment(HttpServletRequest request, CommentPostRequest commentPostRequest) {
+    public CommentResponseDto createComment(HttpServletRequest request, Long postId, CommentPostRequest commentPostRequest) {
         Long userId = (Long) request.getAttribute("userId");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Post post = postRepository.findById(commentPostRequest.getPostId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (post.isDeleted()) throw new CustomException(ErrorCode.POST_DELETED);
 
         Comment comment = CommentMapper.toComment(user, post, commentPostRequest);
