@@ -34,7 +34,7 @@ public class ImageService {
     @Transactional
     public ImagePostResponseDto uploadProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
         // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
-        Long userId = (Long) httpServletRequest.getAttribute("userId");
+        Long userId = requestDto.getUserId();
 
         Image prevImage = imageRepository.findByTypeAndUserId("profile", userId);
         if (prevImage != null) {
