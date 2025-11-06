@@ -29,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private static final String[] EXCLUDED_PATHS = {
             "/**/signUp", "/**/signIn", "/**/list", "/**/detail/*", "/**/viewcount", "/**/refresh",
-            "/images/**", "/legal/**"
+            "/images/**", "/legal/**", "/**/signUp/profiles"
     };
 
     private final PathMatcher pathMatcher = new AntPathMatcher();
