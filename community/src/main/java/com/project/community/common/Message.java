@@ -28,7 +28,9 @@ public enum Message {
     POST_IMAGE_UPLOADED("Post image is uploaded."),
     POST_IMAGE_NOT_SET("Post image is not set."),
     POST_IMAGE_RETURNED("Post image is returned."),
-    POST_IMAGE_UPDATED("Post image is updated.");
+    POST_IMAGE_UPDATED("Post image is updated."),
+    SIGNOUT_SUCCESS("Signed out."),
+    TOKEN_REFRESHED("Token have been refreshed");
 
 
     private final String message;

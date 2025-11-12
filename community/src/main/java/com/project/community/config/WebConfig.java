@@ -1,4 +1,5 @@
 package com.project.community.config;
+
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.context.annotation.Configuration;
