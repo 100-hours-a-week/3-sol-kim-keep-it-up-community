@@ -27,8 +27,8 @@ public class CommentController {
     => id, 작성자, 게시글 id, 내용, 작성일자
      */
     @PostMapping
-    public ResponseEntity<CommentResponse> postComment(HttpServletRequest request, @RequestBody CommentPostRequest commentPostRequestDto) {
-        CommentResponseDto commentResponseDto = commentService.createComment(request, commentPostRequestDto);
+    public ResponseEntity<CommentResponse> postComment(HttpServletRequest request, @PathVariable Long postId, @RequestBody CommentPostRequest commentPostRequestDto) {
+        CommentResponseDto commentResponseDto = commentService.createComment(request, postId, commentPostRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(CommentResponse.from(Message.COMMENT_POST_SUCCESS.getMessage(), commentResponseDto));
     }

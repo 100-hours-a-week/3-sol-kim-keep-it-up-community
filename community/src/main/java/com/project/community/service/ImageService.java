@@ -14,7 +14,6 @@ import com.project.community.repository.PostRepository;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.ImageMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +34,12 @@ public class ImageService {
     @Transactional
     public ImagePostResponseDto uploadProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
         // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/multipart/MultipartFile.html
-        HttpSession session = httpServletRequest.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = requestDto.getUserId();
+
+        Image prevImage = imageRepository.findByTypeAndUserId("profile", userId);
+        if (prevImage != null) {
+            throw new CustomException(ErrorCode.PROFILE_IMAGE_ALREADY_SET);
+        }
 
         MultipartFile file = requestDto.getFile();
         Image image = fileService.uploadImage(file, userId, "profile");
@@ -53,9 +56,10 @@ public class ImageService {
     프로필 사진 조회
      */
     public ImageResponseDto getUserProfileImage(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
+
         Image profileImage = imageRepository.findByTypeAndUserId("profile", userId);
+
         if (profileImage == null) {
             return null;
         }
@@ -68,9 +72,8 @@ public class ImageService {
      */
     @Transactional
     public ImagePostResponseDto updateUserProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
-        HttpSession session = httpServletRequest.getSession(false);
+        Long userId = (Long) httpServletRequest.getAttribute("userId");
 
-        Long userId = (Long) session.getAttribute("userId");
         Image prevImage = imageRepository.findByTypeAndUserId("profile", userId);
         if (prevImage != null) {
             prevImage.setUserId(null);
@@ -108,13 +111,14 @@ public class ImageService {
      */
     @Transactional
     public ImagePostResponseDto updatePostImage(HttpServletRequest httpServletRequest, PostImageUploadRequest requestDto) {
-        HttpSession session = httpServletRequest.getSession(false);
-        Long writerId = (Long) session.getAttribute("userId");
+        Long writerId = (Long)  httpServletRequest.getAttribute("userId");
 
         MultipartFile newFile = requestDto.getFile();
         Long postId = requestDto.getPostId();
         Image prevImage = imageRepository.findByTypeAndPostId("post", postId);
-        prevImage.setPostId(null);
+        if (prevImage != null) {
+            prevImage.setPostId(null);
+        }
 
         Image newImage = fileService.uploadImage(newFile, postId, "post");
         imageRepository.save(newImage);
