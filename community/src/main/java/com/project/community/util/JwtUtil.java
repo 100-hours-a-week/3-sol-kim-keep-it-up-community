@@ -19,6 +19,7 @@ import java.security.Key;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 
 @Component
@@ -54,26 +55,31 @@ public class JwtUtil {
         return new TokenResponseDto(accessToken, refreshToken);
     }
 
-    public String generateAccessToken(Long userId, String email) {
-        long accessTtlSec = 15 * 60;
-        return Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .claim("email", email)
+    public String buildToken(String subject, Map<String, String> claim, long ttl, boolean isJtiNeeded) {
+        var builder = Jwts.builder()
+                .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(Date.from(Instant.now().plusSeconds(accessTtlSec)))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+                .setExpiration(Date.from(Instant.now().plusSeconds(ttl)))
+                .signWith(key, SignatureAlgorithm.HS256);
+
+        for (Map.Entry<String, String> e : claim.entrySet()) {
+            builder.claim(e.getKey(), e.getValue());
+        }
+
+        // jti: 토큰 고유 식별자. 탈취, 중복 막기 위해 DB, 블랙리스트에서 재사용 여부를 추적할 때 활용
+        if (isJtiNeeded) {
+            builder.setId(UUID.randomUUID().toString());
+        }
+
+        return builder.compact();
+    }
+
+    public String generateAccessToken(Long userId, String email) {
+        return buildToken(String.valueOf(userId), Map.of("email", email), jwtProperties.getAccessTtl(), false);
     }
 
     public String generateRefreshToken(Long userId) {
-        return Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .claim("typ", "refresh")
-                .setId(UUID.randomUUID().toString()) // jti: 토큰 고유 식별자. 탈취, 중복 막기 위해 DB, 블랙리스트에서 재사용 여부를 추적할 때 활용
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(Instant.now().plusSeconds(jwtProperties.getRefreshTtl())))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        return buildToken(String.valueOf(userId), Map.of("typ", "refresh"), jwtProperties.getRefreshTtl(), true);
     }
 
     /*
