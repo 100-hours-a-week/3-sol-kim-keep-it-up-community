@@ -10,4 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProfileUploadRequest {
     @NotNull
     private MultipartFile file;
+
+    @NotNull
+    private Long userId;
 }

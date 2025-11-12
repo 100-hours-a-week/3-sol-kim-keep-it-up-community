@@ -11,7 +11,4 @@ public class CommentPostRequest {
     @NotNull
     @NotBlank
     private final String contents;
-
-    @NotNull
-    private final Long postId;
 }

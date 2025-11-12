@@ -1,5 +1,5 @@
 package com.project.community.config;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +15,5 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("file:" + uploadDir)
                 .setCachePeriod(3600);
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SessionInterceptor())
-                .addPathPatterns("/**")
-                .excludePathPatterns("/**/signUp", "/**/signIn", "/**/list", "/**/detail/*", "/**/viewcount", "/legal/**");
     }
 }

@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/images")
+@RequestMapping("/api/images")
 @RequiredArgsConstructor
 public class ImageController {
 
@@ -25,7 +25,7 @@ public class ImageController {
     POST 프로필 사진 등록
     => 사진 id
      */
-    @PostMapping("/profiles")
+    @PostMapping("/signUp/profiles")
     public ResponseEntity<ImageResponse> uploadProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
         ImagePostResponseDto imagePostResponseDto = imageService.uploadProfileImage(httpServletRequest, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED)

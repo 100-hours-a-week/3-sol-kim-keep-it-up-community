@@ -11,7 +11,6 @@ import com.project.community.repository.PostRepository;
 import com.project.community.repository.UserRepository;
 import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,12 +31,11 @@ public class PostService {
     private final PostRepository postRepository;
 
     /*
-    게시글 작성(V2)
+    게시글 작성
      */
     @Transactional
     public PostResponseDto createPost(HttpServletRequest request, PostRequest postRequestDto) {
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         User writer = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         Post post = PostMapper.toPost(postRequestDto, writer);
@@ -83,12 +81,11 @@ public class PostService {
     }
 
     /*
-    게시글 수정 v2
+    게시글 수정 v3
      */
     @Transactional
     public PostResponseDto updatePost(HttpServletRequest request, Long postId, PostUpdateRequest postUpdateRequest) {
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (!post.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_EDIT);
@@ -111,12 +108,11 @@ public class PostService {
     }
 
     /*
-    게시글 삭제 v2
+    게시글 삭제 v3
      */
     @Transactional
     public void deletePost(HttpServletRequest request, Long postId) {
-        HttpSession session = request.getSession(false);
-        Long userId = (Long) session.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
 
