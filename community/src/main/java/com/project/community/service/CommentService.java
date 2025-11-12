@@ -12,6 +12,8 @@ import com.project.community.repository.CommentRepository;
 import com.project.community.repository.PostRepository;
 import com.project.community.repository.UserRepository;
 import com.project.community.util.CommentMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +29,12 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentResponseDto createComment(CommentPostRequest commentPostRequest) {
-        User user = userRepository.findById(commentPostRequest.getWriterId()).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+    public CommentResponseDto createComment(HttpServletRequest request, CommentPostRequest commentPostRequest) {
+        HttpSession session = request.getSession(false);
+        Long userId = (Long) session.getAttribute("userId");
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
         Post post = postRepository.findById(commentPostRequest.getPostId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (post.isDeleted()) throw new CustomException(ErrorCode.POST_DELETED);
 
@@ -47,21 +53,36 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDto updateComment(Long id, CommentUpdateRequest commentUpdateRequest) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+    public CommentResponseDto updateComment(HttpServletRequest request, Long commentId, CommentUpdateRequest commentUpdateRequest) {
+        HttpSession session = request.getSession(false);
+
+        Long userId = (Long) session.getAttribute("userId");
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         if (comment.isDeleted()) throw new CustomException(ErrorCode.COMMENT_NOT_FOUND);
+
+        if (!comment.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_EDIT);
+
         comment.setContents(commentUpdateRequest.getContents());
         commentRepository.save(comment);
         return CommentMapper.toResponseDto(comment);
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(HttpServletRequest request, Long commentId) {
+        HttpSession session = request.getSession(false);
+
+        Long userId = (Long) session.getAttribute("userId");
+
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
         if (comment.isDeleted()) throw new CustomException(ErrorCode.COMMENT_ALREADY_DELETED);
+        if (!comment.getWriter().getId().equals(userId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_DELETE);
+
         comment.setDeleted(true);
+
         Post post = postRepository.findById(comment.getPost().getId()).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (post.isDeleted()) throw new CustomException(ErrorCode.POST_DELETED);
+
         post.deleteComment(comment);
     }
 }

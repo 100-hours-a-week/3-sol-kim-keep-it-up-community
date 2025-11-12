@@ -10,6 +10,7 @@ import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.dto.response.UserResponse;
 import com.project.community.service.UserService;
 import com.project.community.common.Message;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class UserController {
     POST, 회원가입
     => id, 닉네임
      */
-    @PostMapping
+    @PostMapping("/signUp")
     public ResponseEntity<UserResponse> createUser(@RequestBody UserSignUpRequest userSignUpRequest) {
         UserResponseDto userResponseDto = userService.createUser(userSignUpRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -37,49 +38,99 @@ public class UserController {
     POST, 로그인
     => id, 닉네임
      */
-    @PostMapping("/signin")
-    public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest) {
-        UserResponseDto userResponseDto = userService.signIn(userSignInRequest);
+    @PostMapping("/signIn")
+    public ResponseEntity<UserResponse> signIn(@RequestBody UserSignInRequest userSignInRequest,
+                                               HttpServletRequest request) {
+        UserResponseDto userResponseDto = userService.signIn(userSignInRequest, request);
         return ResponseEntity.ok(UserResponse.from(Message.SIGNIN_SUCCESS.getMessage(),userResponseDto));
     }
 
     /*
-    GET, 프로필 정보 조회
+    GET, 프로필 정보 조회  v1
     => 닉네임, 이메일
      */
-    @GetMapping("/{id}")
+    @GetMapping("/v1/{id}")
     public ResponseEntity<UserResponse> getUserInfo(@PathVariable Long id) {
         UserProfileResponseDto userProfileResponseDto = userService.getUserInfo(id);
         return ResponseEntity.ok(UserResponse.from(Message.USER_INFO_FETCHED.getMessage(), userProfileResponseDto));
     }
 
     /*
-    PATCH, 프로필 정보 수정
+    GET, 프로필 정보 조회 v2
+    => 닉네임, 이메일
+     */
+    @GetMapping
+    public ResponseEntity<UserResponse> getUserInfo(HttpServletRequest request) {
+        UserProfileResponseDto userProfileResponseDto = userService.getUserInfo(request);
+        return ResponseEntity.ok(UserResponse.from(Message.USER_INFO_FETCHED.getMessage(), userProfileResponseDto));
+    }
+
+    /*
+    PATCH, 프로필 정보 수정 v1
     => id, 닉네임
      */
-    @PatchMapping("/{id}")
+    @PatchMapping("/v1/{id}")
     public ResponseEntity<UserResponse> updateUserInfo(@PathVariable Long id, @RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
         UserResponseDto userResponseDto = userService.updateProfile(id, userProfileUpdateRequest);
         return ResponseEntity.ok(UserResponse.from(Message.PROFILE_UPDATE_SUCCESS.getMessage(), userResponseDto));
     }
 
     /*
-    PATCH, 비밀번호 변경
+    PATCH, 프로필 정보 수정 v2
     => id, 닉네임
      */
-    @PatchMapping("/{id}/password")
+    @PatchMapping
+    public ResponseEntity<UserResponse> updateUserInfo(HttpServletRequest request, @RequestBody UserProfileUpdateRequest userProfileUpdateRequest) {
+        UserResponseDto userResponseDto = userService.updateProfile(request, userProfileUpdateRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.PROFILE_UPDATE_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    /*
+    PATCH, 비밀번호 변경 v1
+    => id, 닉네임
+     */
+    @PatchMapping("/v1/{id}/password")
     public ResponseEntity<UserResponse> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
         UserResponseDto userResponseDto = userService.updatePassword(id, userPasswordUpdateRequest);
         return ResponseEntity.ok(UserResponse.from(Message.PASSWORD_UPDATE_SUCCESS.getMessage(), userResponseDto));
     }
 
     /*
-    DELETE, 회원탈퇴
+    PATCH, 비밀번호 변경 v2
     => id, 닉네임
      */
-    @DeleteMapping("/{id}")
+    @PatchMapping("/password")
+    public ResponseEntity<UserResponse> updatePassword(HttpServletRequest request, @RequestBody UserPasswordUpdateRequest userPasswordUpdateRequest) {
+        UserResponseDto userResponseDto = userService.updatePassword(request, userPasswordUpdateRequest);
+        return ResponseEntity.ok(UserResponse.from(Message.PASSWORD_UPDATE_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    /*
+    DELETE, 회원탈퇴 v1
+    => id, 닉네임
+     */
+    @DeleteMapping("/v1/{id}")
     public ResponseEntity<UserResponse> withdraw(@PathVariable Long id) {
         UserResponseDto userResponseDto = userService.withdraw(id);
         return ResponseEntity.ok(UserResponse.from(Message.WITHDRAWAL_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    /*
+   DELETE, 회원탈퇴 v2
+   => id, 닉네임
+    */
+    @DeleteMapping
+    public ResponseEntity<UserResponse> withdraw(HttpServletRequest request) {
+        UserResponseDto userResponseDto = userService.withdraw(request);
+        return ResponseEntity.ok(UserResponse.from(Message.WITHDRAWAL_SUCCESS.getMessage(), userResponseDto));
+    }
+
+    /*
+    DELETE 로그아웃
+     */
+    @DeleteMapping("/signOut")
+    public ResponseEntity<UserResponse> signOut(HttpServletRequest request) {
+        userService.signOut(request);
+        return ResponseEntity.ok(UserResponse.from(Message.SIGNOUT_SUCCESS.getMessage()));
     }
 }
