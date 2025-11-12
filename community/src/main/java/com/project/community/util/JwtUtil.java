@@ -25,6 +25,9 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
+
+    private final String accessTokenLiteral = "accessToken";
+    private final String refreshTokenLiteral = "refreshToken";
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final JwtProperties jwtProperties;
@@ -98,14 +101,14 @@ public class JwtUtil {
     쿠키에 토큰 추가
      */
     public void addTokenCookies(HttpServletResponse response, TokenResponseDto tokenResponse, Integer maxAge) {
-        addTokenCookie(response, "accessToken", tokenResponse.accessToken(), (maxAge != null) ? maxAge : jwtProperties.getAccessTtl());
-        addTokenCookie(response, "refreshToken", tokenResponse.refreshToken(), (maxAge != null) ? maxAge : jwtProperties.getRefreshTtl());
+        addTokenCookie(response, accessTokenLiteral, tokenResponse.accessToken(), (maxAge != null) ? maxAge : jwtProperties.getAccessTtl());
+        addTokenCookie(response, refreshTokenLiteral, tokenResponse.refreshToken(), (maxAge != null) ? maxAge : jwtProperties.getRefreshTtl());
     }
 
     public void addTokenCookie(HttpServletResponse response, String name, String value, Integer maxAge) {
-        if (maxAge == null && name.equals("accessToken")) {
+        if (maxAge == null && name.equals(accessTokenLiteral)) {
             maxAge = jwtProperties.getAccessTtl();
-        } else if (maxAge == null && name.equals("refreshToken")) {
+        } else if (maxAge == null && name.equals(refreshTokenLiteral)) {
             maxAge = jwtProperties.getRefreshTtl();
         }
 
