@@ -3,13 +3,12 @@ package com.project.community.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 public class ProfileUploadRequest {
     @NotNull
-    private MultipartFile file;
+    private String imageUrl;
 
     @NotNull
     private Long userId;

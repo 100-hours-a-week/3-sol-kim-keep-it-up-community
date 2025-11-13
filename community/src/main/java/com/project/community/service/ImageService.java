@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,6 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
-    private final FileService fileService;
 
     /*
     프로필 사진 등록
@@ -41,11 +39,11 @@ public class ImageService {
             throw new CustomException(ErrorCode.PROFILE_IMAGE_ALREADY_SET);
         }
 
-        MultipartFile file = requestDto.getFile();
-        Image image = fileService.uploadImage(file, userId, "profile");
+        String imageUrl = requestDto.getImageUrl();
+        Image image = new Image(imageUrl, userId, "profile");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        user.setProfileImageUrl("images/" + image.getFilename());
+        user.setProfileImageUrl(imageUrl);
         userRepository.save(user);
 
         imageRepository.save(image);
@@ -63,8 +61,8 @@ public class ImageService {
         if (profileImage == null) {
             return null;
         }
-        String filename = profileImage.getFilename();
-        return ImageMapper.toResponseDto("images/" + filename);
+        String url = profileImage.getUrl();
+        return ImageMapper.toResponseDto(url);
     }
 
     /*
@@ -79,11 +77,11 @@ public class ImageService {
             prevImage.setUserId(null);
         }
 
-        MultipartFile newFile = requestDto.getFile();
-        Image image = fileService.uploadImage(newFile, userId, "profile");
+        String imageUrl = requestDto.getImageUrl();
+        Image image = new Image(imageUrl, userId, "profile");
 
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        user.setProfileImageUrl("images/" + image.getFilename());
+        user.setProfileImageUrl(imageUrl);
 
         imageRepository.save(image);
         return ImageMapper.toResponseDto(image);
@@ -93,13 +91,12 @@ public class ImageService {
     게시글 사진 등록
      */
     @Transactional
-    public ImagePostResponseDto uploadPostImage(PostImageUploadRequest requestDto) {
-        MultipartFile file = requestDto.getFile();
-        Long postId = requestDto.getPostId();
+    public ImagePostResponseDto uploadPostImage(PostImageUploadRequest requestDto, Long postId) {
+        String imageUrl = requestDto.getImageUrl();
 
-        Image image = fileService.uploadImage(file, postId, "post");
+        Image image = new Image(imageUrl, postId, "post");
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
-        post.setImageUrl("images/" + image.getFilename());
+        post.setImageUrl(imageUrl);
 
         imageRepository.save(image);
         postRepository.save(post);
@@ -110,22 +107,21 @@ public class ImageService {
     게시글 사진 변경
      */
     @Transactional
-    public ImagePostResponseDto updatePostImage(HttpServletRequest httpServletRequest, PostImageUploadRequest requestDto) {
+    public ImagePostResponseDto updatePostImage(HttpServletRequest httpServletRequest, PostImageUploadRequest requestDto, Long postId) {
         Long writerId = (Long)  httpServletRequest.getAttribute("userId");
 
-        MultipartFile newFile = requestDto.getFile();
-        Long postId = requestDto.getPostId();
+        String imageUrl = requestDto.getImageUrl();
         Image prevImage = imageRepository.findByTypeAndPostId("post", postId);
         if (prevImage != null) {
             prevImage.setPostId(null);
         }
 
-        Image newImage = fileService.uploadImage(newFile, postId, "post");
+        Image newImage = new Image(imageUrl, postId, "post");
         imageRepository.save(newImage);
 
         Post post = postRepository.findById(postId).orElseThrow(() -> new CustomException(ErrorCode.POST_NOT_FOUND));
         if (!post.getWriter().getId().equals(writerId)) throw new CustomException(ErrorCode.WRITER_ONLY_CAN_EDIT);
-        post.setImageUrl("images/" + newImage.getFilename());
+        post.setImageUrl(imageUrl);
         postRepository.save(post);
 
         return ImageMapper.toResponseDto(newImage);

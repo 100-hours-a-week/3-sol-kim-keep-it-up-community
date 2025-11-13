@@ -16,11 +16,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "image_id")
     Long id;
-    String filename;
-
-    String originalFilename;
-
-    Long size;
+    String url;
 
     Long userId;
 
@@ -28,17 +24,13 @@ public class Image {
 
     String type;
 
-    public Image(String filename, String originalFilename, Long size, Long id, String type) {
+    public Image(String url, Long id, String type) {
         if (type.equals("post")) {
-            this.filename = filename;
-            this.originalFilename = originalFilename;
-            this.size = size;
+            this.url = url;
             this.postId = id;
             this.type = type;
         } else {
-            this.filename = filename;
-            this.originalFilename = originalFilename;
-            this.size = size;
+            this.url = url;
             this.userId = id;
             this.type = type;
         }
