@@ -64,7 +64,7 @@ public class ImageController {
     => 사진 id
      */
     @PostMapping("/posts/{postId}")
-    public ResponseEntity<ImageResponse> uploadPostImage(@Valid PostImageUploadRequest requestDto, @PathVariable Long postId) {
+    public ResponseEntity<ImageResponse> uploadPostImage(@Valid @RequestBody PostImageUploadRequest requestDto, @PathVariable Long postId) {
         ImagePostResponseDto imagePostResponseDto = imageService.uploadPostImage(requestDto, postId);
         return ResponseEntity.ok(ImageResponse.from(Message.POST_IMAGE_UPLOADED.getMessage(), imagePostResponseDto));
     }
