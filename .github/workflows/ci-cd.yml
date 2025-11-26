@@ -116,7 +116,7 @@ jobs:
 
       - name: Deploy to EC2 via Docker Compose
         run: | 
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "REGISTRY_URL=$REGISTRY_URL sudo -E bash -s" << 'EOF'
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "REGISTRY_URL=$REGISTRY_URL DB_HOST=$DB_HOST DB_USER=$DB_USER DB_PASSWORD=$DB_PASSWORD JWT_SECRET=$JWT_SECRET sudo -E bash -s" << 'EOF'
             cd /home/${{ secrets.SERVER_USER }}/backend
             docker compose pull
             docker compose up -d
