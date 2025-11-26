@@ -26,9 +26,11 @@ jobs:
         uses: gradle/actions/setup-gradle@017a9effdb900e5b5b2fddfb590a105619dca3c3 # v4.4.2
 
       - name: Run tests
+        working-directory: ./community
         run: ./gradlew clean test
 
       - name: Build with Gradle
+        working-directory: ./community
         run: ./gradlew build -x test
 
   build-and-push-image:
