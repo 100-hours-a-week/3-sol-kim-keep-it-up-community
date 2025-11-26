@@ -26,7 +26,7 @@ public class ImageController {
     => 사진 id
      */
     @PostMapping("/signUp/profiles")
-    public ResponseEntity<ImageResponse> uploadProfileImage(HttpServletRequest httpServletRequest, ProfileUploadRequest requestDto) {
+    public ResponseEntity<ImageResponse> uploadProfileImage(HttpServletRequest httpServletRequest, @Valid @RequestBody ProfileUploadRequest requestDto) {
         ImagePostResponseDto imagePostResponseDto = imageService.uploadProfileImage(httpServletRequest, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ImageResponse.from(Message.PROFILE_IMAGE_POST_SUCCESS.getMessage(), imagePostResponseDto));
@@ -54,7 +54,7 @@ public class ImageController {
     => 사진 id
      */
     @PutMapping("/profiles")
-    public ResponseEntity<ImageResponse> updateProfileImage(HttpServletRequest httpServletRequest, @Valid ProfileUploadRequest requestDto) {
+    public ResponseEntity<ImageResponse> updateProfileImage(HttpServletRequest httpServletRequest, @Valid @RequestBody ProfileUploadRequest requestDto) {
         ImagePostResponseDto imagePostResponseDto = imageService.updateUserProfileImage(httpServletRequest, requestDto);
         return ResponseEntity.ok(ImageResponse.from(Message.PROFILE_IMAGE_UPDATED.getMessage(), imagePostResponseDto));
     }
@@ -63,9 +63,9 @@ public class ImageController {
     POST 게시글 사진 등록
     => 사진 id
      */
-    @PostMapping("/posts")
-    public ResponseEntity<ImageResponse> uploadPostImage(@Valid PostImageUploadRequest requestDto) {
-        ImagePostResponseDto imagePostResponseDto = imageService.uploadPostImage(requestDto);
+    @PostMapping("/posts/{postId}")
+    public ResponseEntity<ImageResponse> uploadPostImage(@Valid @RequestBody PostImageUploadRequest requestDto, @PathVariable Long postId) {
+        ImagePostResponseDto imagePostResponseDto = imageService.uploadPostImage(requestDto, postId);
         return ResponseEntity.ok(ImageResponse.from(Message.POST_IMAGE_UPLOADED.getMessage(), imagePostResponseDto));
     }
 
@@ -74,8 +74,8 @@ public class ImageController {
     => 사진 id
      */
     @PutMapping("/posts/{postId}")
-    public ResponseEntity<ImageResponse> updatePostImage(HttpServletRequest httpServletRequest, @Valid PostImageUploadRequest requestDto) {
-        ImagePostResponseDto imagePostResponseDto = imageService.updatePostImage(httpServletRequest, requestDto);
+    public ResponseEntity<ImageResponse> updatePostImage(HttpServletRequest httpServletRequest, @Valid @RequestBody PostImageUploadRequest requestDto, @PathVariable Long postId) {
+        ImagePostResponseDto imagePostResponseDto = imageService.updatePostImage(httpServletRequest, requestDto, postId);
         return ResponseEntity.ok(ImageResponse.from(Message.POST_IMAGE_UPDATED.getMessage(), imagePostResponseDto));
     }
 }

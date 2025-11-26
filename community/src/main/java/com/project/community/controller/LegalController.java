@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.time.LocalDate;
 
 @Controller
-@RequestMapping("/legal")
+@RequestMapping("/api/legal")
 public class LegalController {
 
     /*
