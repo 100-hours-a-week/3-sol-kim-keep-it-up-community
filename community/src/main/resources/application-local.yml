@@ -1,10 +1,8 @@
 spring:
-  profiles:
-    active: prod
   datasource:
-    url: jdbc:mysql://${DB_HOST}:3306/community?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://3.35.8.214:3306/community?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
     username: admin
-    password: Admin35!12
+    password: Admin35!1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   servlet:
     multipart:
