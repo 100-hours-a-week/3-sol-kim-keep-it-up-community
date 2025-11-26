@@ -49,6 +49,7 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - name: Build and Push Docker Image
+        working-directory: ./community
         run: |
           docker build --platform linux/amd64 -t ${{ secrets.REGISTRY_URL }}/backend-deploy:latest . 
           docker push ${{ secrets.REGISTRY_URL }}/backend-deploy:latest
