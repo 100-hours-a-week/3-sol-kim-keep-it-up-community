@@ -1,5 +1,7 @@
 package com.project.community.service;
 
+import com.project.community.common.CustomException;
+import com.project.community.common.ErrorCode;
 import com.project.community.dto.UserResponseDto;
 import com.project.community.dto.request.UserSignUpRequest;
 import com.project.community.repository.RefreshTokenRepository;
@@ -10,6 +12,7 @@ import org.mockito.Mockito;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class UserServiceTest {
 
@@ -26,7 +29,7 @@ class UserServiceTest {
     );
 
     @Test
-    void signUp() {
+    void signUp_success() {
 
         // given
         String nickname = "admin";
@@ -54,5 +57,31 @@ class UserServiceTest {
                 && user.getPassword().equals(encryptedPassword)
         ));
         assertThat(result.getNickname()).isEqualTo(nickname);
+    }
+
+    @Test
+    void signUp_fail_nicknameConflict() {
+
+        // given
+        String nickname = "admin";
+        String email = "admin@admin.com";
+        String password = "Admin35!";
+        String encryptedPassword = "encrypted-password";
+        UserSignUpRequest userSignUpRequest = new UserSignUpRequest(nickname, email,  password);
+
+        Mockito.when(passwordEncoder.encode(password))
+                .thenReturn(encryptedPassword);
+
+        Mockito.when(userRepository.existsByEmail(email))
+                .thenReturn(false);
+
+        Mockito.when(userRepository.existsByNicknameAndIsDeletedFalse(nickname))
+                .thenReturn(true);
+
+
+        // when & then
+        CustomException e = assertThrows(CustomException.class, () -> userService.createUser(userSignUpRequest));
+
+        assertThat(e.getErrorCode()).isEqualTo(ErrorCode.NICKNAME_CONFLICT);
     }
 }

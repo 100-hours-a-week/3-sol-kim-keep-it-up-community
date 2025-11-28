@@ -1,5 +1,7 @@
 package com.project.community.service;
 
+import com.project.community.common.CustomException;
+import com.project.community.common.ErrorCode;
 import com.project.community.dto.CommentResponseDto;
 import com.project.community.dto.request.CommentPostRequest;
 import com.project.community.entity.Post;
@@ -14,6 +16,7 @@ import org.mockito.Mockito;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CommentServiceTest {
 
@@ -28,7 +31,7 @@ public class CommentServiceTest {
     );
 
     @Test
-    void registerComment() {
+    void registerComment_success() {
 
         // given
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -63,5 +66,29 @@ public class CommentServiceTest {
         assertThat(result.getContents()).isEqualTo(contents);
         assertThat(result.getWriter().getNickname()).isEqualTo("Tim");
         assertThat(result.getPostId()).isEqualTo(postId);
+        assertThat(post.getCommentsCount()).isEqualTo(1);
+    }
+
+    @Test
+    void registerComment_fail_userNotFound() {
+        // given
+        HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+        Long userId = 1L;
+        Long postId = 1L;
+        String contents = "오늘도 수고하셨습니다!";
+        CommentPostRequest commentPostRequest = new CommentPostRequest(contents);
+
+        Mockito.when(request.getAttribute("userId"))
+                .thenReturn(1L);
+
+        Mockito.when(userRepository.findById(userId))
+                .thenReturn(Optional.empty());
+
+        // when & then
+        CustomException e = assertThrows(CustomException.class,
+                () -> commentService.createComment(request, postId, commentPostRequest)
+        );
+
+        assertThat(e.getErrorCode()).isEqualTo(ErrorCode.USER_NOT_FOUND);
     }
 }
