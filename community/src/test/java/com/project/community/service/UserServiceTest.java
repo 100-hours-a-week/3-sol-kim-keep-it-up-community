@@ -32,13 +32,11 @@ class UserServiceTest {
         String nickname = "admin";
         String email = "admin@admin.com";
         String password = "Admin35!";
-
-        String encodedPassword = "encoded-password";
-
+        String encryptedPassword = "encrypted-password";
         UserSignUpRequest userSignUpRequest = new UserSignUpRequest(nickname, email,  password);
 
         Mockito.when(passwordEncoder.encode(password))
-                .thenReturn(encodedPassword);
+                .thenReturn(encryptedPassword);
 
         Mockito.when(userRepository.existsByEmail(email))
                 .thenReturn(false);
@@ -53,13 +51,8 @@ class UserServiceTest {
         Mockito.verify(userRepository).save(Mockito.argThat(user ->
                 user.getNickname().equals(nickname)
                 && user.getEmail().equals(email)
-                && user.getPassword().equals(encodedPassword)
+                && user.getPassword().equals(encryptedPassword)
         ));
         assertThat(result.getNickname()).isEqualTo(nickname);
-    }
-
-    @Test
-    void getUserInfo() {
-
     }
 }
