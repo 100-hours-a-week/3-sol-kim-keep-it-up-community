@@ -7,7 +7,7 @@
 ## 📌 프로젝트 개요
 
 - **서비스 설명**:  
-  - 예) 사용자가 목표를 등록하고, 게시글/댓글로 서로 응원하는 커뮤니티 서비스의 REST API 서버입니다.
+  목표 혹은 수행한 TODO를 게시글로 공유하고 댓글로 서로를 응원하는 커뮤니티 서비스의 REST API 서버입니다.
 - **주요 기능**
   - 회원가입 / 로그인 (JWT)
   - 회원 정보 수정 / 비밀번호 수정 / 회원 탈퇴 
@@ -19,7 +19,7 @@
 ## 🏗 기술 스택
 
 - **Language**: Java 21
-- **Framework**: Spring Boot 3.x
+- **Framework**: Spring Boot 3.5.6
 - **Build Tool**: Gradle
 - **Database**:  MySQL (prod), H2 (test)
 - **ORM**: Spring Data JPA / Hibernate
@@ -63,66 +63,14 @@
 │       │   ├── java/com/project/community
 │       │   │               ├── CommunityApplication.java
 │       │   │               ├── common
-│       │   │               │   ├── ControllerAdvice.java
-│       │   │               │   ├── CustomException.java
-│       │   │               │   ├── ErrorCode.java
-│       │   │               │   ├── ErrorMessage.java
-│       │   │               │   ├── ErrorResponse.java
-│       │   │               │   └── Message.java
 │       │   │               ├── config
-│       │   │               │   ├── CorsConfig.java
-│       │   │               │   ├── SecurityConfig.java
-│       │   │               │   ├── SessionInterceptor.java
-│       │   │               │   ├── WebConfig.java
-│       │   │               │   └── WebFilterConfig.java
 │       │   │               ├── controller
-│       │   │               │   ├── CommentController.java
-│       │   │               │   ├── ImageController.java
-│       │   │               │   ├── LegalController.java
-│       │   │               │   ├── PostController.java
-│       │   │               │   ├── PostLikeController.java
-│       │   │               │   └── UserController.java
 │       │   │               ├── dto
-│       │   │               │   ├── CommentResponseDto.java
-│       │   │               │   ├── ImagePostResponseDto.java
-│       │   │               │   ├── ImageResponseDto.java
-│       │   │               │   ├── PostLikeResponseDto.java
-│       │   │               │   ├── PostResponseDto.java
-│       │   │               │   ├── TokenResponseDto.java
-│       │   │               │   ├── UserProfileResponseDto.java
-│       │   │               │   ├── UserResponseDto.java
-│       │   │               │   ├── request
-│       │   │               │   └── response
 │       │   │               ├── entity
-│       │   │               │   ├── Comment.java
-│       │   │               │   ├── Image.java
-│       │   │               │   ├── Post.java
-│       │   │               │   ├── PostLike.java
-│       │   │               │   ├── RefreshToken.java
-│       │   │               │   └── User.java
 │       │   │               ├── filter
-│       │   │               │   └── JwtFilter.java
 │       │   │               ├── repository
-│       │   │               │   ├── CommentRepository.java
-│       │   │               │   ├── ImageRepository.java
-│       │   │               │   ├── PostLikeRepository.java
-│       │   │               │   ├── PostRepository.java
-│       │   │               │   ├── RefreshTokenRepository.java
-│       │   │               │   └── UserRepository.java
 │       │   │               ├── service
-│       │   │               │   ├── CommentService.java
-│       │   │               │   ├── ImageService.java
-│       │   │               │   ├── PostLikeService.java
-│       │   │               │   ├── PostService.java
-│       │   │               │   └── UserService.java
 │       │   │               └── util
-│       │   │                   ├── CommentMapper.java
-│       │   │                   ├── ErrorResponseWriter.java
-│       │   │                   ├── ImageMapper.java
-│       │   │                   ├── JwtProperties.java
-│       │   │                   ├── JwtUtil.java
-│       │   │                   ├── PostMapper.java
-│       │   │                   └── UserMapper.java
 │       │   └── resources
 │       │       ├── application-local.yml
 │       │       ├── application-prod.yml
@@ -147,7 +95,7 @@
 ```
 
 ## ✅ 컨벤션
-## 🧑‍💻 커밋 컨벤션
+### 🧑‍💻 커밋 컨벤션
 ```
 feat:    새로운 기능 추가
 fix:     버그 수정
@@ -155,3 +103,31 @@ docs:    문서 수정
 refactor: 코드 구조 개선
 chore:   설정 파일 수정 등
 ```
+
+## 🚀 실행 방법
+1) 로컬 실행 (local 프로파일)
+```bash
+cd community
+./gradlew clean build
+java -jar build/libs/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
+```
+2) 빌드 후 실행 (prod 프로파일)
+```bash
+cd community
+./gradlew clean build
+java -jar build/libs/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+```
+## ⚙️ 환경 설정
+
+- `application.yml`        : 공통 설정
+- `application-local.yml`  : 로컬 개발 환경
+- `application-prod.yml`   : 운영/배포 환경
+
+### 주요 환경 변수
+
+| 이름           | 설명                   |
+|----------------|------------------------|
+| `DB_HOST`      | DB 호스트 (RDS 주소 등) |
+| `DB_USER`      | DB 유저명              |
+| `DB_PASSWORD`  | DB 비밀번호            |
+| `JWT_SECRET`   | JWT 서명용 시크릿 키   |
