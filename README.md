@@ -35,14 +35,12 @@
 
 ## 🧱 아키텍처 / 구조
 
-### 🪜 시스템 아키텍처
-
-<img width="1000" alt="Group 53 (1)" src="https://github.com/user-attachments/assets/def3671e-ed45-4b9f-b9ea-b8f43cd8e328" />
-
+### 시스템 아키텍처
+<img width="1000" height="963" alt="Group 53 (3)" src="https://github.com/user-attachments/assets/b50ac598-48a5-4591-874b-8bc74c87789b" />
 
 - Client → Nginx → Frontend → Backend(API) → DB
 
-### 🗂️ 패키지 구조
+### 패키지 구조
 
 ```text
 ├── README.md
@@ -95,7 +93,7 @@
 ```
 
 ## ✅ 컨벤션
-### 🧑‍💻 커밋 컨벤션
+### 커밋 컨벤션
 ```
 feat:    새로운 기능 추가
 fix:     버그 수정
@@ -104,19 +102,6 @@ refactor: 코드 구조 개선
 chore:   설정 파일 수정 등
 ```
 
-## 🚀 실행 방법
-1) 로컬 실행 (local 프로파일)
-```bash
-cd community
-./gradlew clean build
-java -jar build/libs/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
-```
-2) 빌드 후 실행 (prod 프로파일)
-```bash
-cd community
-./gradlew clean build
-java -jar build/libs/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
-```
 ## ⚙️ 환경 설정
 
 - `application.yml`        : 공통 설정
@@ -131,3 +116,18 @@ java -jar build/libs/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 | `DB_USER`      | DB 유저명              |
 | `DB_PASSWORD`  | DB 비밀번호            |
 | `JWT_SECRET`   | JWT 서명용 시크릿 키   |
+
+
+## 🚀 실행 방법
+- 로컬 실행 (local 프로파일)
+```bash
+cd community
+./gradlew clean build
+java -jar build/libs/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=local
+```
+- 빌드 후 실행 (prod 프로파일)
+```bash
+cd community
+./gradlew clean build
+java -jar build/libs/community-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+```
