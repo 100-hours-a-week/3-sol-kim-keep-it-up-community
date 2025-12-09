@@ -20,7 +20,10 @@ public class CorsConfig{
                 "http://127.0.0.1:5500",
                 "http://localhost:5500",
                 "http://127.0.0.1:3000",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                "http://my-elb-103377251.ap-northeast-2.elb.amazonaws.com",
+                "https://keepit-up.site",
+                "http://keepit-up.site"
         ));
         config.addAllowedHeader("*"); // allowing responses to all the headers
         config.addAllowedMethod("*"); // allowing responsese to all the methods; post, put, get, delete, patch
