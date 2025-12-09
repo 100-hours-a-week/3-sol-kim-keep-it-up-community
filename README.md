@@ -2,16 +2,20 @@
 
 > 목표 달성을 위한 커뮤니티 서비스 **Keepit-Up**의 백엔드 서버 레포지토리입니다.
 
-
-데모 영상: [https://www.notion.so/Keepit-up-2c41c972687480eeb11fd1012561225d?source=copy_link](https://www.notion.so/Keepit-up-2c41c972687480eeb11fd1012561225d?source=copy_link)
-
-고민 과정 및 트러블 슈팅: [https://www.notion.so/Keepit-up-2c41c97268748025a76bf956a04baeeb?source=copy_link](https://www.notion.so/Keepit-up-2c41c97268748025a76bf956a04baeeb?source=copy_link)
+|   |    |
+|----|---|
+|데모 영상 |[https://www.notion.so/Keepit-up-2c41c972687480eeb11fd1012561225d?source=copy_link](https://www.notion.so/Keepit-up-2c41c972687480eeb11fd1012561225d?source=copy_link)|
+|고민 과정 및 트러블 슈팅 | [https://www.notion.so/Keepit-up-2c41c97268748025a76bf956a04baeeb?source=copy_link](https://www.notion.so/Keepit-up-2c41c97268748025a76bf956a04baeeb?source=copy_link) |
 
 ---
 
 ## 📌 프로젝트 개요
 
-- **서비스 설명**:  
+- **작업 기간**:
+  2025.10.01 - 2025.12.08
+- **작업 인원**:
+  프론트엔드 & 백엔드 & 인프라 1명 (본인)
+- **프로젝트 설명**:  
   목표 혹은 수행한 TODO를 게시글로 공유하고 댓글로 서로를 응원하는 커뮤니티 서비스의 REST API 서버입니다.
 - **주요 기능**
   - 회원가입 / 로그인 (JWT)
